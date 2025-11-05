@@ -4,9 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:WorkoutTracker"
+    xmlns:Views="clr-namespace:WorkoutTracker.Views"
     Shell.FlyoutBehavior="Disabled"
     Title="WorkoutTracker">
 
-    <ShellContent Title="Главная страница" ContentTemplate="{DataTemplate local:MainPageView}" Route="MainPage" />
+
+    <TabBar >
+        <ShellContent Title="Главная" Icon="main.png" ContentTemplate="{DataTemplate Views:MainPageView}"/>
+        <ShellContent Title="Статистика" Icon="stats.png" ContentTemplate="{DataTemplate Views:StatsPageView}"/>
+        <ShellContent Title="Таймер" ContentTemplate="{DataTemplate Views:TimerPageView}"/>
+        <ShellContent Title="Настройки" Icon="settings.png" ContentTemplate="{DataTemplate Views:SettingsPageView}"/>
+    </TabBar>
 
 </Shell>
