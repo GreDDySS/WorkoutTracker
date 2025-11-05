@@ -3,17 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WorkoutTracker.Views.MainPageView">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
+    <VerticalStackLayout Padding="20">
+        <Label Text="Список таймеров" FontAttributes="Bold" FontSize="20"/>
+        <CollectionView ItemsSource="{Binding Timers}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" Margin="5" BorderColor="Gray">
+                        <VerticalStackLayout>
+                            <Label Text="Отжимария" FontSize="10"/>
+                            <Label Text="Подходы"/>
+                            <Label Text="Работа: "/>
+                            <Label Text="Отдых: "/>
+                            <Button Text="Старт"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-            <Label
-                Text="Hello, World!"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
-
-        </VerticalStackLayout>
-    </ScrollView>
+        <Button Text="Добавить таймер" Margin="0, 10"/>
+        <Label Text="Осталось 20 сек" FontSize="24" HorizontalOptions="Center"/>
+        <Button Text="Остановить"/>
+    </VerticalStackLayout>
 
 </ContentPage>

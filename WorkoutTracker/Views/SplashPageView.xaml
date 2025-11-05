@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WorkoutTracker.Views.SplashPageView"
+             Title="SplashPageView"
+             Background="#121212">
+    
+    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+        <Image Source="fitness.png" WidthRequest="150" HeightRequest="150"/>
+        <Label Text="Workout Tracker" 
+               FontSize="28"
+               FontAttributes="Bold"
+               TextColor="White" 
+               HorizontalOptions="Center" 
+               Margin="0,20,0,0"/>
+        <ActivityIndicator IsRunning="True" Color="White" Margin="0,30,0,0"/>
+    </VerticalStackLayout>
+</ContentPage>
