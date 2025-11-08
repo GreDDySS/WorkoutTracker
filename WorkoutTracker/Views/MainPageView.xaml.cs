@@ -10,6 +10,7 @@ namespace WorkoutTracker.Views
             InitializeComponent();
             BindingContext = new MainViewModel();
         }
+
     }
 
 }

@@ -1,29 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="WorkoutTracker.Views.MainPageView">
+             xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
+             x:Class="WorkoutTracker.Views.MainPageView"
+             x:DataType="vm:MainViewModel"
+             xmlns:local="clr-namespace:WorkoutTracker">
+    <ContentPage.Resources>
+        <Style x:Key="TimeButton" TargetType="Button">
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="HeightRequest" Value="40" />
+            <Setter Property="WidthRequest" Value="40" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="White" />
+            <Setter Property="BorderColor" Value="Transparent" />
+            <Setter Property="BorderWidth" Value="0" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
 
-    <VerticalStackLayout Padding="20">
-        <Label Text="Список таймеров" FontAttributes="Bold" FontSize="20"/>
-        <CollectionView ItemsSource="{Binding Timers}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Padding="10" Margin="5" BorderColor="Gray">
-                        <VerticalStackLayout>
-                            <Label Text="Отжимария" FontSize="10"/>
-                            <Label Text="Подходы"/>
-                            <Label Text="Работа: "/>
-                            <Label Text="Отдых: "/>
-                            <Button Text="Старт"/>
-                        </VerticalStackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <Style x:Key="TimeLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="56" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+        </Style>
+    </ContentPage.Resources>
 
-        <Button Text="Добавить таймер" Margin="0, 10"/>
-        <Label Text="Осталось 20 сек" FontSize="24" HorizontalOptions="Center"/>
-        <Button Text="Остановить"/>
+    <VerticalStackLayout Padding="15,0" BackgroundColor="#121212">
+        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *" RowSpacing="20">
+            <Grid BackgroundColor="#222222" ColumnDefinitions="*, Auto" HeightRequest="50" Margin="-15, 0, -15, 0">
+                <Label Grid.Column="0" Text="Workout Traker" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Padding="20,0,0,0"/>
+            </Grid>
+
+            <Frame Grid.Row="1" Padding="0,10,0,0" BackgroundColor="#222222" CornerRadius="10">
+                <VerticalStackLayout>
+                    <Label Text="ПОДХОДЫ" TextColor="LightGray" FontSize="14" HorizontalOptions="Center"/>
+                    <Grid ColumnDefinitions="Auto, *, Auto" Margin="50,0">
+                        <Button Grid.Column="0" Text="—" Style="{StaticResource TimeButton}" Command="{Binding ChangeApproachesCommand}" CommandParameter="-"/>
+                        <Label Grid.Column="1" Text="{Binding Approaches}" TextColor="White" Style="{StaticResource TimeLabel}" FontSize="48" />
+                        <Button Grid.Column="2" Text="+" Style="{StaticResource TimeButton}" Command="{Binding ChangeApproachesCommand}" CommandParameter="+"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Grid.Row="2" Background="#222222" CornerRadius="10">
+                <VerticalStackLayout>
+                    <VerticalStackLayout Margin="30,0">
+                        <Label Text="РАБОТА" TextColor="#00FF00" FontSize="14" HorizontalOptions="Center" />
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <Button Grid.Column="0" Text="—" Style="{StaticResource TimeButton}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="-"/>
+                            <Label Grid.Column="1" Text="{Binding WorkTimeDisplay}" TextColor="#00FF00" Style="{StaticResource TimeLabel}" />
+                            <Button Grid.Column="2" Text="+" Style="{StaticResource TimeButton}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="+"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="#666666" Margin="-10, 10" />
+
+                    <VerticalStackLayout Margin="30,0">
+                        <Label Text="ОТДЫХ" TextColor="#00BFFF" FontSize="14" HorizontalOptions="Center" />
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <Button Grid.Column="0" Text="—" Style="{StaticResource TimeButton}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="-"/>
+                            <Label Grid.Column="1" Text="{Binding RestTimeDisplay}" TextColor="#00BFFF" Style="{StaticResource TimeLabel}" />
+                            <Button Grid.Column="2" Text="+" Style="{StaticResource TimeButton}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="+"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+            <Label Grid.Row="3" Text="Создать свою тренировку" TextColor="LightGray" FontAttributes="Bold" FontSize="16" HorizontalOptions="Center"/>
+            <Button Grid.Row="4" Text="+ Несколько упражнений" FontSize="24" TextColor="White" BackgroundColor="#222222"  HeightRequest="60"/>
+
+            <Button Grid.Row="5" VerticalOptions="End" Text="Начать" FontAttributes="Bold" FontSize="32" Margin="0,10" TextColor="Black" BackgroundColor="White" Command="{Binding StartWorkoutCommand}"/>
+        </Grid>
     </VerticalStackLayout>
 
 </ContentPage>
