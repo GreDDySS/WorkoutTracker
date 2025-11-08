@@ -1,13 +1,131 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
              x:Class="WorkoutTracker.Views.TimerPageView"
-             Title="TimerPageView">
+             x:DataType="vm:TimerViewModel"
+             Title="Таймер"
+             BackgroundColor="#2E7D32"
+             Shell.NavBarIsVisible="False">
     
-    <VerticalStackLayout Padding="20">
-        <Label Text="Здесь будут твои таймеры"
-               FontSize="20"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"/>
-    </VerticalStackLayout>
+    <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
+        
+        <!-- Header -->
+        <Grid Grid.Row="0" 
+              ColumnDefinitions="Auto, *, Auto" 
+              Padding="15,15,15,20"
+              BackgroundColor="#2E7D32">
+            
+            <!-- Close Button -->
+            <Button Grid.Column="0"
+                    Command="{Binding CloseCommand}"
+                    BackgroundColor="#4CAF50"
+                    CornerRadius="8"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    Padding="0"
+                    BorderWidth="0"
+                    Text="×"
+                    TextColor="White"
+                    FontSize="24"
+                    FontAttributes="Bold"/>
+            
+            <!-- Center: Remaining Time -->
+            <VerticalStackLayout Grid.Column="1"
+                                 HorizontalOptions="Center"
+                                 Spacing="5">
+                <Label Text="ОСТАЛОСЬ"
+                       TextColor="White"
+                       FontSize="14"
+                       FontAttributes="None"
+                       HorizontalOptions="Center"/>
+                <Label Text="{Binding RemainingTime}"
+                       TextColor="White"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+            
+            <!-- Chat Button -->
+            <Button Grid.Column="2"
+                    Command="{Binding ChatCommand}"
+                    BackgroundColor="#4CAF50"
+                    CornerRadius="8"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    Padding="0"
+                    BorderWidth="0"
+                    Text="💬"
+                    TextColor="White"
+                    FontSize="18"/>
+        </Grid>
+        
+        <!-- Main Content -->
+        <VerticalStackLayout Grid.Row="1"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Spacing="30">
+            
+            <!-- Workout Progress -->
+            <Label Text="{Binding WorkoutProgress}"
+                   TextColor="White"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+            
+            <!-- Main Timer -->
+            <Label Text="{Binding CurrentTime}"
+                   TextColor="White"
+                   FontSize="72"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+        
+        <!-- Footer Controls -->
+        <Grid Grid.Row="2"
+              ColumnDefinitions="Auto, *, Auto"
+              Padding="15,20,15,30"
+              BackgroundColor="#2E7D32">
+            
+            <!-- Previous Button -->
+            <Button Grid.Column="0"
+                    Command="{Binding PreviousCommand}"
+                    BackgroundColor="#4CAF50"
+                    CornerRadius="8"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    Padding="0"
+                    BorderWidth="0"
+                    Text="««"
+                    TextColor="White"
+                    FontSize="20"
+                    FontAttributes="Bold"/>
+            
+            <!-- Pause Button -->
+            <Button Grid.Column="1"
+                    Command="{Binding PauseCommand}"
+                    BackgroundColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Margin="15,0"
+                    BorderWidth="0"
+                    Text="{Binding PauseButtonFullText}"
+                    TextColor="Black"
+                    FontSize="16"/>
+            
+            <!-- Next Button -->
+            <Button Grid.Column="2"
+                    Command="{Binding NextCommand}"
+                    BackgroundColor="#4CAF50"
+                    CornerRadius="8"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    Padding="0"
+                    BorderWidth="0"
+                    Text="»»"
+                    TextColor="White"
+                    FontSize="20"
+                    FontAttributes="Bold"/>
+        </Grid>
+    </Grid>
 </ContentPage>
