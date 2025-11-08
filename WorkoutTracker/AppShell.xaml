@@ -6,14 +6,16 @@
     xmlns:local="clr-namespace:WorkoutTracker"
     xmlns:Views="clr-namespace:WorkoutTracker.Views"
     Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
     Title="WorkoutTracker">
 
 
-    <TabBar >
+    <TabBar>
         <ShellContent Title="Главная" Icon="main.png" ContentTemplate="{DataTemplate Views:MainPageView}"/>
-        <ShellContent Title="Статистика" Icon="stats.png" ContentTemplate="{DataTemplate Views:StatsPageView}"/>
-        <ShellContent Title="Таймер" ContentTemplate="{DataTemplate Views:TimerPageView}"/>
-        <ShellContent Title="Настройки" Icon="settings.png" ContentTemplate="{DataTemplate Views:SettingsPageView}"/>
+        <ShellContent Title="тест" Icon="main.png" ContentTemplate="{DataTemplate Views:AddExercisePageView}"/>
+        <ShellContent Title="тест2" Icon="main.png" ContentTemplate="{DataTemplate Views:CreateWorkoutPageView}"/>
+        <ShellContent Title="Тренировки" Icon="settings.png" ContentTemplate="{DataTemplate Views:WorkoutPageView}"/>
+        
     </TabBar>
 
 </Shell>
