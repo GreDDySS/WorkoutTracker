@@ -11,8 +11,10 @@ namespace WorkoutTracker
         {
             InitializeComponent();
             
-            // Register route for TimerPage
             Routing.RegisterRoute("TimerPage", typeof(TimerPageView));
+            Routing.RegisterRoute("AddExercisePage", typeof(AddExercisePageView));
+            Routing.RegisterRoute("AddProgramPage", typeof(AddProgramPageView));
+            Routing.RegisterRoute("SelectExercisesPage", typeof(SelectExercisesPageView));
         }
     }
 }
