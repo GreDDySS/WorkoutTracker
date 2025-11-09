@@ -1,34 +1,128 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
              x:Class="WorkoutTracker.Views.WorkoutPageView"
-             Title="WorkoutPageView"
+             x:DataType="vm:WorkoutViewModel"
+             xmlns:converters="clr-namespace:WorkoutTracker.Converters"
+             Title="Тренировки"
              BackgroundColor="#121212">
+    
+    <ContentPage.Resources>
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        
+        <DataTemplate x:Key="ExerciseItemTemplate">
+            <Frame BackgroundColor="#2C2C2C"
+                   CornerRadius="10"
+                   Padding="15"
+                   Margin="0,5,0,5"
+                   HasShadow="False">
+                <Label Text="{Binding .}" TextColor="White" FontSize="16" />
+            </Frame>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ProgramItemTemplate">
+            <Frame BackgroundColor="#2C2C2C"
+                   CornerRadius="10"
+                   Padding="15"
+                   Margin="0,5,0,5"
+                   HasShadow="False">   
+                <Label Text="{Binding .}" TextColor="White" FontSize="16" />
+            </Frame>
+        </DataTemplate>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, *">
         <Grid Grid.Row="0" ColumnDefinitions="*,*" ColumnSpacing="0" HeightRequest="50" BackgroundColor="#2C2C2C">
             <VerticalStackLayout Grid.Column="0" Padding="0,10">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SwitchToExercisesCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
                 <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                     <Image Source="plus.png" HeightRequest="20" WidthRequest="20"/>
                     <Label Text="Упражнения" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
-                <BoxView Color="#00BFFF" HeightRequest="2" Margin="0,8,0,0" WidthRequest="30"/>
+                <BoxView Color="#00BFFF"
+                         HeightRequest="2"
+                         Margin="0,8,0,0"
+                         WidthRequest="30"
+                         IsVisible="{Binding IsExercisesTabVisible}"/>
             </VerticalStackLayout>
 
             <VerticalStackLayout Grid.Column="1" Padding="0,10">
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SwitchToProgramsCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
                 <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
                     <Image Source="plus.png" HeightRequest="20" WidthRequest="20"/>
                     <Label Text="Программы" TextColor="White" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
-                <BoxView Color="#00BFFF" HeightRequest="2" Margin="0,8,0,0" IsVisible="False"/>
+                <BoxView Color="#00BFFF"
+                         HeightRequest="2"
+                         Margin="0,8,0,0"
+                         WidthRequest="30"
+                         IsVisible="{Binding IsProgramsTabVisible}"/>
             </VerticalStackLayout>
         </Grid>
+
         <Grid Grid.Row="1" Padding="20">
-            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-                <Label Text="Нет упражнений" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center"/>
-                <Label Text="Ваши упражнения появятся здесь." TextColor="LightGray" FontSize="14" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
-            </VerticalStackLayout>
-            <Button Text="+" FontSize="30" WidthRequest="56" HeightRequest="56" CornerRadius="28" BackgroundColor="#404040" Padding="0" VerticalOptions="End" HorizontalOptions="End" Margin="0,0,10,10" Command="{Binding CreateWorkoutCommand}"/>
+            <Grid IsVisible="{Binding IsExercisesTabVisible}">
+                <VerticalStackLayout VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     Spacing="10"
+                                     IsVisible="{Binding HasExercises, Converter={StaticResource InvertedBoolConverter}}">
+                    <Label Text="Нет упражнений"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Ваши упражнения появятся здесь."
+                           TextColor="LightGray"
+                           FontSize="14"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <CollectionView ItemsSource="{Binding Exercises}"
+                                ItemTemplate="{StaticResource ExerciseItemTemplate}"
+                                IsVisible="{Binding HasExercises}"
+                                SelectionMode="None"/>
+            </Grid>
+
+            <Grid IsVisible="{Binding IsProgramsTabVisible}">
+                <VerticalStackLayout VerticalOptions="Center" 
+                                     HorizontalOptions="Center" 
+                                     Spacing="10"
+                                     IsVisible="{Binding HasPrograms, Converter={StaticResource InvertedBoolConverter}}">
+                    <Label Text="Нет программ" 
+                           TextColor="White" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center"/>
+                    <Label Text="Ваши программы появятся здесь." 
+                           TextColor="LightGray" 
+                           FontSize="14" 
+                           HorizontalOptions="Center" 
+                           HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+
+                <CollectionView ItemsSource="{Binding Programs}"
+                                ItemTemplate="{StaticResource ProgramItemTemplate}"
+                                IsVisible="{Binding HasPrograms}"
+                                SelectionMode="None"/>
+            </Grid>
+
+            <Button Text="+"
+                    FontSize="30"
+                    WidthRequest="56"
+                    HeightRequest="56"
+                    CornerRadius="28"
+                    BackgroundColor="#404040"
+                    Padding="0"
+                    VerticalOptions="End"
+                    HorizontalOptions="End"
+                    Margin="0,0,10,10"
+                    Command="{Binding CreateWorkoutCommand}"/>
         </Grid>
     </Grid>
 </ContentPage>
