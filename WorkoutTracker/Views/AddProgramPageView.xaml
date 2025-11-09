@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
+             xmlns:models="clr-namespace:WorkoutTracker.Models"
+             x:Class="WorkoutTracker.Views.AddProgramPageView"
+             x:DataType="vm:AddProgramViewModel"
+             Title="Добавить программу"
+             BackgroundColor="#121212">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="ProgramExerciseTemplate" x:DataType="models:ProgramExerciseItem">
+            <Frame BackgroundColor="#404040"
+               CornerRadius="8"
+               Padding="15"
+               Margin="0,5,0,5"
+               HasShadow="False">
+                <Grid ColumnDefinitions="*, Auto, Auto, Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="3">
+                        <Label Text="{Binding ExerciseName}"
+                           TextColor="White"
+                           FontSize="16"
+                           FontAttributes="Bold"/>
+                        <Label Text="{Binding ApproachesText}"
+                           TextColor="LightGray"
+                           FontSize="14"/>
+                    </VerticalStackLayout>
+
+                    <!-- Кнопки управления подходами -->
+                    <Grid Grid.Column="1" ColumnDefinitions="Auto, *, Auto" Margin="10,0">
+                        <Button Grid.Column="0"
+                            Text="—"
+                            BackgroundColor="#2C2C2C"
+                            TextColor="White"
+                            CornerRadius="5"
+                            WidthRequest="30"
+                            HeightRequest="30"
+                            Padding="0"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            Command="{Binding DecreaseApproachesCommand}"/>
+                        <Label Grid.Column="1"
+                           Text="{Binding Approaches}"
+                           TextColor="White"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Margin="5,0"/>
+                        <Button Grid.Column="2"
+                            Text="+"
+                            BackgroundColor="#2C2C2C"
+                            TextColor="White"
+                            CornerRadius="5"
+                            WidthRequest="30"
+                            HeightRequest="30"
+                            Padding="0"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            Command="{Binding IncreaseApproachesCommand}"/>
+                    </Grid>
+
+                    <Button Grid.Column="2"
+                        Text="×"
+                        BackgroundColor="Transparent"
+                        TextColor="Red"
+                        FontSize="20"
+                        WidthRequest="30"
+                        HeightRequest="30"
+                        Padding="0"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AddProgramViewModel}}, Path=RemoveExerciseCommand}"
+                        CommandParameter="{Binding .}"/>
+                </Grid>
+            </Frame>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *, Auto"
+              Padding="15,10"
+              BackgroundColor="#2C2C2C">
+            
+            <Button Grid.Column="0"
+                    Command="{Binding CloseCommand}"
+                    BackgroundColor="#404040"
+                    CornerRadius="8"
+                    WidthRequest="40"
+                    HeightRequest="40"
+                    Padding="0"
+                    BorderWidth="0"
+                    Text="×"
+                    TextColor="White"
+                    FontSize="24"
+                    FontAttributes="Bold"/>
+
+            <VerticalStackLayout Grid.Column="1"
+                                 HorizontalOptions="Center"
+                                 Spacing="5">
+                <Label Text="НОВАЯ ПРОГРАММА"
+                       TextColor="WHite"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <BoxView Grid.ColumnSpan="2"
+                     HeightRequest="40"
+                     WidthRequest="40"
+                     Color="Transparent"/>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20"
+                                 Spacing="20"
+                                 VerticalOptions="Start">
+                <Frame BackgroundColor="#2C2C2C"
+                       CornerRadius="10"
+                       Padding="15"
+                       HasShadow="False">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Название программы"
+                               TextColor="White"
+                               FontSize="14"
+                               Opacity="0.8"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                        <Entry Text="{Binding ProgramName}"
+                               Placeholder="Введите название"
+                               PlaceholderColor="Gray"
+                               TextColor="White"
+                               FontSize="18"
+                               BackgroundColor="Transparent"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame BackgroundColor="#2C2C2C"
+                       CornerRadius="10"
+                       Padding="15"
+                       HasShadow="False">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Упражнения в программе"
+                               TextColor="White"
+                               FontSize="14"
+                               Opacity="0.8"/>
+
+                        <Button Text="+ Добавить упражнение"
+                                BackgroundColor="#404040"
+                                TextColor="White"
+                                CornerRadius="8"
+                                HeightRequest="40"
+                                Command="{Binding AddExerciseCommand}"
+                                FontAttributes="Bold"/>
+
+                        <CollectionView ItemsSource="{Binding ProgramExercises}"
+                                        ItemTemplate="{StaticResource ProgramExerciseTemplate}"
+                                        IsVisible="{Binding HasExercises}"
+                                        SelectionMode="None"/>
+
+                        <VerticalStackLayout IsVisible="{Binding HasNoExercises}"
+                                             VerticalOptions="Center"
+                                             HorizontalOptions="Center"
+                                             Spacing="5"
+                                             Margin="0,10">
+                            <Label Text="Нет упражнений"
+                                   TextColor="Gray"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Добавьте упражнения в программу"
+                                   TextColor="Gray"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="2"
+              Padding="15,20,15,30"
+              BackgroundColor="#2C2C2C">
+            <Button Command="{Binding SaveCommand}"
+                    BackgroundColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    BorderWidth="0"
+                    Text="Сохранить"
+                    TextColor="Black"
+                    FontSize="18"
+                    FontAttributes="Bold"/>
+        </Grid>
+    </Grid>
+
+</ContentPage>
