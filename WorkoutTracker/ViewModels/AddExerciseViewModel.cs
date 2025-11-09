@@ -1,25 +1,127 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using WorkoutTracker.Views;
+﻿using System.Windows.Input;
+using WorkoutTracker.Services;
+using WorkoutTracker.Base;
+using WorkoutTracker.Models;
 
 namespace WorkoutTracker.ViewModels
 {
-     public class AddExerciseViewModel : BaseViewModel
+    public class AddExerciseViewModel : BaseViewModel
     {
-        public ICommand SaveExerciseCommand { get; set; }
+        private readonly INavigationService _navigationService;
+        private readonly IDialogService _dialogService;
+        private readonly IExerciseService _exerciseService;
+        private readonly ITimeAdjustmentService _timeAdjustmentService;
+        private RelayCommand _saveCommand;
+
+        private string _exerciseName = string.Empty;
+        private int _workTimeSeconds = 20;
+        private int _restTimeSeconds = 10;
+
+        public string ExerciseName
+        {
+            get => _exerciseName;
+            set
+            {
+                if (SetProperty(ref _exerciseName, value))
+                {
+                    _saveCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public int WorkTimeSeconds
+        {
+            get => _workTimeSeconds;
+            set
+            {
+                if (SetProperty(ref _workTimeSeconds, value))
+                {
+                    OnPropertyChanged(nameof(WorkTimeDisplay));
+                    _saveCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public int RestTimeSeconds
+        {
+            get => _restTimeSeconds;
+            set
+            {
+                if (SetProperty(ref _restTimeSeconds, value))
+                {
+                    OnPropertyChanged(nameof(RestTimeDisplay));
+                    _saveCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public string WorkTimeDisplay => TimeFormatter.FormatTime(WorkTimeSeconds);
+        public string RestTimeDisplay => TimeFormatter.FormatTime(RestTimeSeconds);
+
+        public ICommand CloseCommand { get; }
+        public ICommand SaveCommand => _saveCommand;
+        public ICommand ChangeWorkTimeCommand { get; }
+        public ICommand ChangeRestTimeCommand { get; }
 
         public AddExerciseViewModel()
         {
-            SaveExerciseCommand = new Command(SaveExercise);
+            _navigationService = GetService<INavigationService>() ?? new NavigationService();
+            _dialogService = GetService<IDialogService>() ?? new DialogService();
+            _exerciseService = GetService<IExerciseService>() ?? new ExerciseService(null);
+            _timeAdjustmentService = GetService<ITimeAdjustmentService>() ?? new TimeAdjustmentService();
+
+            CloseCommand = new RelayCommand(OnClose);
+            _saveCommand = new RelayCommand(OnSave, CanSave);
+            ChangeWorkTimeCommand = new RelayCommand(OnChangeWorkTime);
+            ChangeRestTimeCommand = new RelayCommand(OnChangeRestTime);
         }
 
-        public void SaveExercise()
+        private bool CanSave(object parameter)
         {
-            Application.Current.MainPage = new CreateWorkoutPageView();
+            return !string.IsNullOrWhiteSpace(ExerciseName) &&
+                   WorkTimeSeconds > 0 &&
+                   RestTimeSeconds >= 0;
+        }
+
+        private void OnChangeWorkTime(object parameter)
+        {
+            if (parameter is string direction)
+            {
+                WorkTimeSeconds = _timeAdjustmentService.AdjustTime(WorkTimeSeconds, direction, 5, 5);
+            }
+        }
+
+        private void OnChangeRestTime(object parameter)
+        {
+            if (parameter is string direction)
+            {
+                RestTimeSeconds = _timeAdjustmentService.AdjustTime(RestTimeSeconds, direction, 5, 5);
+            }
+        }
+
+        private async void OnClose(object parameter)
+        {
+            await _navigationService.NavigateBackAsync();
+        }
+
+        private async void OnSave(object parameter)
+        {
+            if (!CanSave(null))
+            {
+                await _dialogService.ShowAlertAsync("Ошибка", "Пожалуйста, заполните все поля корректно");
+                return;
+            }
+
+            var exercise = new Exercise
+            {
+                Name = ExerciseName,
+                WorkTimeSeconds = WorkTimeSeconds,
+                RestTimeSeconds = RestTimeSeconds,
+                IsCustom = true
+            };
+
+            await _exerciseService.SaveExerciseAsync(exercise);
+            await _navigationService.NavigateBackAsync();
         }
     }
 }
