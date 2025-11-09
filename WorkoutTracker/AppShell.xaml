@@ -12,8 +12,6 @@
 
     <TabBar>
         <ShellContent Title="Главная" Icon="main.png" ContentTemplate="{DataTemplate Views:MainPageView}"/>
-        <ShellContent Title="тест" Icon="main.png" ContentTemplate="{DataTemplate Views:AddExercisePageView}"/>
-        <ShellContent Title="тест2" Icon="main.png" ContentTemplate="{DataTemplate Views:CreateWorkoutPageView}"/>
         <ShellContent Title="Тренировки" Icon="settings.png" ContentTemplate="{DataTemplate Views:WorkoutPageView}"/>
         
     </TabBar>
