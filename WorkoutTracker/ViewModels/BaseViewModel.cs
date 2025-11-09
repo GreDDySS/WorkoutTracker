@@ -15,5 +15,10 @@ namespace WorkoutTracker.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        protected T GetService<T>() where T : class
+        {
+            return Application.Current?.Handler?.MauiContext?.Services.GetService<T>();
+        }
     }
 }
