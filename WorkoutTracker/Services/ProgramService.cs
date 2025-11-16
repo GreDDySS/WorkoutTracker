@@ -35,6 +35,7 @@ namespace WorkoutTracker.Services
             try
             {
                 return await _context.Programs
+                    .AsNoTracking()
                     .Include(p => p.Exercises)
                     .ThenInclude(pe => pe.Exercise)
                     .FirstOrDefaultAsync(p => p.Id == id);
