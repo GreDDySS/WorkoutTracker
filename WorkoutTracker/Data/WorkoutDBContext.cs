@@ -9,6 +9,7 @@ namespace WorkoutTracker.Data
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Program> Programs { get; set; }
         public DbSet<ProgramExercise> ProgramExercises { get; set; }
+        public DbSet<WorkoutHistory> WorkoutHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -65,11 +66,63 @@ namespace WorkoutTracker.Data
 
             modelBuilder.Entity<ProgramExercise>()
                 .HasIndex(pe => pe.ExerciseId);
+
+            modelBuilder.Entity<WorkoutHistory>(entity =>
+            {
+                entity.HasKey(wh => wh.Id);
+                entity.Property(wh => wh.Id).ValueGeneratedOnAdd();
+                entity.Property(wh => wh.WorkoutDate).IsRequired();
+                entity.Property(wh => wh.WorkoutName).HasMaxLength(200);
+                entity.Property(wh => wh.ProgramName).HasMaxLength(200);
+                entity.Property(wh => wh.WorkoutDetails).HasMaxLength(2000);
+            });
+
+            modelBuilder.Entity<WorkoutHistory>()
+                .HasIndex(wh => wh.WorkoutDate);
         }
 
         public async Task InitializeDatabaseAsync()
         {
-            await Database.EnsureCreatedAsync();
+            try
+            {
+                // Проверяем, существует ли таблица WorkoutHistory
+                var canConnect = await Database.CanConnectAsync();
+                if (canConnect)
+                {
+                    // Проверяем, есть ли таблица WorkoutHistory
+                    try
+                    {
+                        await Database.ExecuteSqlRawAsync("SELECT COUNT(*) FROM WorkoutHistories LIMIT 1");
+                    }
+                    catch
+                    {
+                        // Таблицы нет, нужно обновить схему
+                        // Для SQLite проще всего пересоздать базу, но это удалит данные
+                        // Вместо этого создадим таблицу вручную, если её нет
+                        await Database.ExecuteSqlRawAsync(@"
+                            CREATE TABLE IF NOT EXISTS WorkoutHistories (
+                                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                WorkoutDate TEXT NOT NULL,
+                                WorkoutName TEXT,
+                                TotalDurationSeconds INTEGER NOT NULL,
+                                IsProgram INTEGER NOT NULL,
+                                ProgramId INTEGER,
+                                ProgramName TEXT,
+                                WorkoutDetails TEXT
+                            )");
+                        await Database.ExecuteSqlRawAsync("CREATE INDEX IF NOT EXISTS IX_WorkoutHistories_WorkoutDate ON WorkoutHistories(WorkoutDate)");
+                    }
+                }
+                else
+                {
+                    await Database.EnsureCreatedAsync();
+                }
+            }
+            catch
+            {
+                // Если что-то пошло не так, просто создаем базу заново
+                await Database.EnsureCreatedAsync();
+            }
 
             if (!Exercises.Any(e => !e.IsCustom))
             {
