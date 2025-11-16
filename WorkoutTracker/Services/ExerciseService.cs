@@ -1,4 +1,5 @@
-﻿using WorkoutTracker.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WorkoutTracker.Data;
 using WorkoutTracker.Models;
 
 namespace WorkoutTracker.Services
@@ -14,44 +15,114 @@ namespace WorkoutTracker.Services
 
         public async Task<List<Exercise>> GetAllExercisesAsync()
         {
-            // TODO: Реализовать загрузку из БД
-            return new List<Exercise>();
+            try
+            {
+                return await _context.Exercises
+                    .OrderBy(e => e.Name)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке упражнений: {ex.Message}");
+                return new List<Exercise>();
+            }
         }
 
         public async Task<List<Exercise>> GetCustomExercisesAsync()
         {
-            // TODO: Реализовать загрузку из БД
-            return new List<Exercise>();
+            try
+            {
+                return await _context.Exercises
+                    .Where(e => e.IsCustom)
+                    .OrderBy(e => e.Name)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке пользовательских упражнений: {ex.Message}");
+                return new List<Exercise>();
+            }
         }
 
         public async Task<List<Exercise>> GetSystemExercisesAsync()
         {
-            // TODO: Реализовать загрузку из БД
-            // Временные данные для примера
-            return new List<Exercise>
+            try
             {
-                new Exercise { Id = 101, Name = "Отжимания", WorkTimeSeconds = 20, RestTimeSeconds = 10, IsCustom = false },
-                new Exercise { Id = 102, Name = "Приседания", WorkTimeSeconds = 25, RestTimeSeconds = 15, IsCustom = false }
-            };
+                return await _context.Exercises
+                    .Where(e => !e.IsCustom)
+                    .OrderBy(e => e.Name)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке системных упражнений: {ex.Message}");
+                return new List<Exercise>();
+            }
         }
 
         public async Task<Exercise> GetExerciseByIdAsync(int id)
         {
-            // TODO: Реализовать загрузку из БД
-            return null;
+            try
+            {
+                return await _context.Exercises
+                    .FirstOrDefaultAsync(e => e.Id == id);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке упражнения: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<int> SaveExerciseAsync(Exercise exercise)
         {
-            // TODO: Реализовать сохранение в БД
-            System.Diagnostics.Debug.WriteLine($"Сохранение упражнения: {exercise.Name}, Работа: {exercise.WorkTimeSeconds}с, Отдых: {exercise.RestTimeSeconds}с");
-            return 0;
+            try
+            {
+                if (exercise.Id == 0)
+                {
+                    _context.Exercises.Add(exercise);
+                }
+                else
+                {
+                    _context.Exercises.Update(exercise);
+                }
+
+                await _context.SaveChangesAsync();
+                return exercise.Id;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при сохранении упражнения: {ex.Message}");
+                return 0;
+            }
         }
 
         public async Task<bool> DeleteExerciseAsync(int id)
         {
-            // TODO: Реализовать удаление из БД
-            return false;
+            try
+            {
+                var exercise = await _context.Exercises.FindAsync(id);
+                if (exercise == null)
+                    return false;
+
+                var isUsed = await _context.ProgramExercises
+                    .AnyAsync(pe => pe.ExerciseId == id);
+
+                if (isUsed)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Невозможно удалить упражнение, так как оно используется в программах.");
+                    return false;
+                }
+
+                _context.Exercises.Remove(exercise);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при удалении упражнения: {ex.Message}");
+                return false;
+            }
         }
     }
 }

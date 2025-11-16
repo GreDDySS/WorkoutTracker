@@ -7,6 +7,5 @@ public partial class SelectExercisesPageView : ContentPage
 	public SelectExercisesPageView()
 	{
 		InitializeComponent();
-		BindingContext = new SelectExercisesViewModel();
 	}
 }

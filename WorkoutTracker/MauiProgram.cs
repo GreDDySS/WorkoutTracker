@@ -18,7 +18,20 @@ namespace WorkoutTracker
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-            builder.Services.AddSingleton<WorkoutDbContext>();
+            builder.Services.AddSingleton<WorkoutDbContext>(provider =>
+            {
+                var context = new WorkoutDbContext();
+                try
+                {
+                    context.InitializeDatabaseAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Ошибка инициализации БД: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                }
+                return context;
+            });
 
             builder.Services.AddSingleton<IWorkoutTimerService, WorkoutTimerService>();
             builder.Services.AddTransient<IWorkoutStateService, WorkoutStateService>();

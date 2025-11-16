@@ -53,13 +53,6 @@ namespace WorkoutTracker.Models
             return new ProgramExercise
             {
                 ExerciseId = ExerciseId,
-                Exercise = new Exercise
-                {
-                    Id = ExerciseId,
-                    Name = ExerciseName,
-                    WorkTimeSeconds = WorkTimeSeconds,
-                    RestTimeSeconds = RestTimeSeconds
-                },
                 Approaches = Approaches
             };
         }

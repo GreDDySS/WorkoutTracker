@@ -4,9 +4,9 @@ namespace WorkoutTracker.Services
 {
     public interface IProgramService
     {
-        Task<List<Program>> GetAllProgramsAsync();
-        Task<Program> GetProgramByIdAsync(int id);
-        Task<int> SaveProgramAsync(Program program);
+        Task<List<Models.Program>> GetAllProgramsAsync();
+        Task<Models.Program> GetProgramByIdAsync(int id);
+        Task<int> SaveProgramAsync(Models.Program program);
         Task<bool> DeleteProgramAsync(int id);
     }
 }

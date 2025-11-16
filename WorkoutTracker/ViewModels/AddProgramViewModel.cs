@@ -88,9 +88,9 @@ namespace WorkoutTracker.ViewModels
             await _navigationService.NavigateBackAsync();
         }
 
-        private Program CreateProgramFromViewModel()
+        private Models.Program CreateProgramFromViewModel()
         {
-            return new Program
+            return new Models.Program
             {
                 Name = ProgramName,
                 Exercises = ProgramExercises
@@ -101,13 +101,21 @@ namespace WorkoutTracker.ViewModels
 
         private async void OnAddExercise(object parameter)
         {
-            var selectPage = new SelectExercisesPageView();
-            var selectViewModel = new SelectExercisesViewModel();
-            selectPage.BindingContext = selectViewModel;
+            try
+            {
+                var selectPage = new SelectExercisesPageView();
+                var selectViewModel = new SelectExercisesViewModel();
+                selectPage.BindingContext = selectViewModel;
 
-            selectViewModel.ExercisesSelected += OnExercisesSelected;
+                selectViewModel.ExercisesSelected += OnExercisesSelected;
 
-            await Shell.Current.Navigation.PushAsync(selectPage);
+                await Shell.Current.Navigation.PushAsync(selectPage);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при открытии страницы выбора: {ex.Message}");
+                await _dialogService.ShowAlertAsync("Ошибка", "Не удалось открыть страницу выбора упражнений");
+            }
         }
 
         private void OnExercisesSelected(object sender, List<SelectableExercise> selectedExercises)
@@ -117,13 +125,13 @@ namespace WorkoutTracker.ViewModels
 
             foreach (var exercise in selectedExercises)
             {
+                
                 if (!ProgramExercises.Any(pe => pe.ExerciseId == exercise.Id))
                 {
                     var programExercise = ProgramExerciseItem.FromSelectableExercise(exercise);
                     ProgramExercises.Add(programExercise);
                 }
             }
-
         }
 
         private void OnRemoveExercise(object parameter)

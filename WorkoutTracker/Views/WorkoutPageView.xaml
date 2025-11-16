@@ -2,32 +2,52 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
+             xmlns:models="clr-namespace:WorkoutTracker.Models"
              x:Class="WorkoutTracker.Views.WorkoutPageView"
              x:DataType="vm:WorkoutViewModel"
              xmlns:converters="clr-namespace:WorkoutTracker.Converters"
              Title="Тренировки"
              BackgroundColor="#121212">
-    
+
     <ContentPage.Resources>
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-        
-        <DataTemplate x:Key="ExerciseItemTemplate">
+
+        <DataTemplate x:Key="ExerciseItemTemplate" x:DataType="models:Exercise">
             <Frame BackgroundColor="#2C2C2C"
                    CornerRadius="10"
                    Padding="15"
                    Margin="0,5,0,5"
                    HasShadow="False">
-                <Label Text="{Binding .}" TextColor="White" FontSize="16" />
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="{Binding Name}" 
+                           TextColor="White" 
+                           FontSize="16" 
+                           FontAttributes="Bold"/>
+                    <Label Text="{Binding WorkTimeSeconds, StringFormat='Работа: {0}с'}" 
+                           TextColor="LightGray" 
+                           FontSize="12"/>
+                    <Label Text="{Binding RestTimeSeconds, StringFormat='Отдых: {0}с'}" 
+                           TextColor="LightGray" 
+                           FontSize="12"/>
+                </VerticalStackLayout>
             </Frame>
         </DataTemplate>
 
-        <DataTemplate x:Key="ProgramItemTemplate">
+        <DataTemplate x:Key="ProgramItemTemplate" x:DataType="models:Program">
             <Frame BackgroundColor="#2C2C2C"
                    CornerRadius="10"
                    Padding="15"
                    Margin="0,5,0,5"
-                   HasShadow="False">   
-                <Label Text="{Binding .}" TextColor="White" FontSize="16" />
+                   HasShadow="False">
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="{Binding Name}" 
+                           TextColor="White" 
+                           FontSize="16" 
+                           FontAttributes="Bold"/>
+                    <Label Text="{Binding Exercises.Count, StringFormat='Упражнений: {0}'}" 
+                           TextColor="LightGray" 
+                           FontSize="12"/>
+                </VerticalStackLayout>
             </Frame>
         </DataTemplate>
     </ContentPage.Resources>

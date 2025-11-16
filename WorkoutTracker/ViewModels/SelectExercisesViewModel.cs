@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 using WorkoutTracker.Base;
 using WorkoutTracker.Models;
@@ -10,6 +11,7 @@ namespace WorkoutTracker.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IExerciseService _exerciseService;
+        private RelayCommand _addSelectedCommand;
 
         public ObservableCollection<SelectableExercise> CustomExercises { get; set; }
         public ObservableCollection<SelectableExercise> SystemExercises { get; set; }
@@ -29,7 +31,7 @@ namespace WorkoutTracker.ViewModels
         public event EventHandler<List<SelectableExercise>> ExercisesSelected;
 
         public ICommand CloseCommand { get; }
-        public ICommand AddSelectedCommand { get; }
+        public ICommand AddSelectedCommand => _addSelectedCommand;
 
         public SelectExercisesViewModel()
         {
@@ -39,22 +41,41 @@ namespace WorkoutTracker.ViewModels
             CustomExercises = new ObservableCollection<SelectableExercise>();
             SystemExercises = new ObservableCollection<SelectableExercise>();
 
-            CustomExercises.CollectionChanged += (s, e) => UpdateSelectedCount();
-            SystemExercises.CollectionChanged += (s, e) => UpdateSelectedCount();
+            CustomExercises.CollectionChanged += OnCollectionChanged;
+            SystemExercises.CollectionChanged += OnCollectionChanged;
 
-            foreach (var exercise in CustomExercises)
-            {
-                exercise.PropertyChanged += (s, e) => { if (e.PropertyName == nameof(SelectableExercise.IsSelected)) UpdateSelectedCount(); };
-            }
-            foreach (var exercise in SystemExercises)
-            {
-                exercise.PropertyChanged += (s, e) => { if (e.PropertyName == nameof(SelectableExercise.IsSelected)) UpdateSelectedCount(); };
-            }
-
-            LoadExercises();
 
             CloseCommand = new RelayCommand(OnClose);
-            AddSelectedCommand = new RelayCommand(OnAddSelected, (object _) => HasSelectedExercises);
+            _addSelectedCommand = new RelayCommand(OnAddSelected, CanAddSelected);
+
+            LoadExercises();
+        }
+
+        private void OnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (SelectableExercise item in e.NewItems)
+                {
+                    item.PropertyChanged += OnExercisePropertyChanged;
+                }
+            }
+            if (e.OldItems != null)
+            {
+                foreach (SelectableExercise item in e.OldItems)
+                {
+                    item.PropertyChanged -= OnExercisePropertyChanged;
+                }
+            }
+            UpdateSelectedCount();
+        }
+
+        private void OnExercisePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SelectableExercise.IsSelected))
+            {
+                UpdateSelectedCount();
+            }
         }
 
         public void UpdateSelectedCount()
@@ -64,33 +85,49 @@ namespace WorkoutTracker.ViewModels
             OnPropertyChanged(nameof(AddButtonText));
         }
 
+        private bool CanAddSelected(object parameter)
+        {
+            return HasSelectedExercises;
+        }
+
         private async void LoadExercises()
         {
-            var customExercises = await _exerciseService.GetCustomExercisesAsync();
-            var systemExercises = await _exerciseService.GetSystemExercisesAsync();
-
-            foreach(var ex in customExercises)
+            try
             {
-                CustomExercises.Add(new SelectableExercise
+                var customExercises = await _exerciseService.GetCustomExercisesAsync();
+                var systemExercises = await _exerciseService.GetSystemExercisesAsync();
+
+                foreach (var ex in customExercises)
                 {
-                    Id = ex.Id,
-                    Name = ex.Name,
-                    WorkTimeSeconds = ex.WorkTimeSeconds,
-                    RestTimeSeconds = ex.RestTimeSeconds,
-                    IsCustom = true
-                });
+                    var selectable = new SelectableExercise
+                    {
+                        Id = ex.Id,
+                        Name = ex.Name,
+                        WorkTimeSeconds = ex.WorkTimeSeconds,
+                        RestTimeSeconds = ex.RestTimeSeconds,
+                        IsCustom = true
+                    };
+                    selectable.PropertyChanged += OnExercisePropertyChanged;
+                    CustomExercises.Add(selectable);
+                }
+
+                foreach (var ex in systemExercises)
+                {
+                    var selectable = new SelectableExercise
+                    {
+                        Id = ex.Id,
+                        Name = ex.Name,
+                        WorkTimeSeconds = ex.WorkTimeSeconds,
+                        RestTimeSeconds = ex.RestTimeSeconds,
+                        IsCustom = false
+                    };
+                    selectable.PropertyChanged += OnExercisePropertyChanged;
+                    SystemExercises.Add(selectable);
+                }
             }
-
-            foreach(var ex in systemExercises)
+            catch (Exception ex)
             {
-                SystemExercises.Add(new SelectableExercise
-                {
-                    Id = ex.Id,
-                    Name = ex.Name,
-                    WorkTimeSeconds = ex.WorkTimeSeconds,
-                    RestTimeSeconds = ex.RestTimeSeconds,
-                    IsCustom = false
-                });
+                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке упражнений: {ex.Message}");
             }
         }
 
@@ -101,12 +138,23 @@ namespace WorkoutTracker.ViewModels
 
         private async void OnAddSelected(object parameter)
         {
-            var selected = CustomExercises.Where(e => e.IsSelected)
-                .Concat(SystemExercises.Where(e => e.IsSelected))
-                .ToList();
+            try
+            {
+                var selected = CustomExercises.Where(e => e.IsSelected)
+                    .Concat(SystemExercises.Where(e => e.IsSelected))
+                    .ToList();
 
-            ExercisesSelected?.Invoke(this, selected);
-            await _navigationService.NavigateBackAsync();
+                if (selected.Count > 0)
+                {
+                    ExercisesSelected?.Invoke(this, selected);
+                }
+
+                await _navigationService.NavigateBackAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при добавлении упражнений: {ex.Message}");
+            }
         }
     }
 }
