@@ -40,6 +40,7 @@ namespace WorkoutTracker
             builder.Services.AddSingleton<IExerciseService, ExerciseService>();
             builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<ITimeAdjustmentService, TimeAdjustmentService>();
+            builder.Services.AddSingleton<IWorkoutHistoryService, WorkoutHistoryService>();
 
             builder.Services.AddTransient<TimerViewModel>();
 
