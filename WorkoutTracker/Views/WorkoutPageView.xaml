@@ -18,18 +18,28 @@
                    Padding="15"
                    Margin="0,5,0,5"
                    HasShadow="False">
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="{Binding Name}" 
-                           TextColor="White" 
-                           FontSize="16" 
-                           FontAttributes="Bold"/>
-                    <Label Text="{Binding WorkTimeSeconds, StringFormat='Работа: {0}с'}" 
-                           TextColor="LightGray" 
-                           FontSize="12"/>
-                    <Label Text="{Binding RestTimeSeconds, StringFormat='Отдых: {0}с'}" 
-                           TextColor="LightGray" 
-                           FontSize="12"/>
-                </VerticalStackLayout>
+                <Grid ColumnDefinitions="*, Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="{Binding Name}" 
+                               TextColor="White" 
+                               FontSize="16" 
+                               FontAttributes="Bold"/>
+                        <Label Text="{Binding WorkTimeSeconds, StringFormat='Работа: {0}с'}" 
+                               TextColor="LightGray" 
+                               FontSize="12"/>
+                        <Label Text="{Binding RestTimeSeconds, StringFormat='Отдых: {0}с'}" 
+                               TextColor="LightGray" 
+                               FontSize="12"/>
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1"
+                            Text="✏️"
+                            FontSize="20"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Padding="10,0"
+                            Clicked="OnEditExerciseClicked"
+                            CommandParameter="{Binding Id}"/>
+                </Grid>
             </Frame>
         </DataTemplate>
 
@@ -39,15 +49,33 @@
                    Padding="15"
                    Margin="0,5,0,5"
                    HasShadow="False">
-                <VerticalStackLayout Spacing="5">
-                    <Label Text="{Binding Name}" 
-                           TextColor="White" 
-                           FontSize="16" 
-                           FontAttributes="Bold"/>
-                    <Label Text="{Binding Exercises.Count, StringFormat='Упражнений: {0}'}" 
-                           TextColor="LightGray" 
-                           FontSize="12"/>
-                </VerticalStackLayout>
+                <Grid ColumnDefinitions="*, Auto, Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="{Binding Name}" 
+                               TextColor="White" 
+                               FontSize="16" 
+                               FontAttributes="Bold"/>
+                        <Label Text="{Binding Exercises.Count, StringFormat='Упражнений: {0}'}" 
+                               TextColor="LightGray" 
+                               FontSize="12"/>
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1"
+                            Text="▶️"
+                            FontSize="18"
+                            BackgroundColor="Transparent"
+                            TextColor="#00FF00"
+                            Padding="10,0"
+                            Clicked="OnStartProgramClicked"
+                            CommandParameter="{Binding Id}"/>
+                    <Button Grid.Column="2"
+                            Text="✏️"
+                            FontSize="20"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            Padding="10,0"
+                            Clicked="OnEditProgramClicked"
+                            CommandParameter="{Binding Id}"/>
+                </Grid>
             </Frame>
         </DataTemplate>
     </ContentPage.Resources>

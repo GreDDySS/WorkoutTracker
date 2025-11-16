@@ -16,6 +16,33 @@ public partial class WorkoutPageView : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-		_viewModel?.LoadData();
+		if (BindingContext is WorkoutViewModel viewModel)
+		{
+			_viewModel?.LoadData();
+		}
+    }
+
+    private void OnEditExerciseClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is int exerciseId)
+        {
+            _viewModel?.EditExerciseCommand?.Execute(exerciseId);
+        }
+    }
+
+    private void OnEditProgramClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is int programId)
+        {
+            _viewModel?.EditProgramCommand?.Execute(programId);
+        }
+    }
+
+    private void OnStartProgramClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is int programId)
+        {
+            _viewModel?.StartProgramCommand?.Execute(programId);
+        }
     }
 }
