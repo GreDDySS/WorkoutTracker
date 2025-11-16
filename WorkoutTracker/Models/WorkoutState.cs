@@ -13,6 +13,7 @@ namespace WorkoutTracker.Models
         public int CurrentTimeSeconds { get; set; }
         public bool IsPaused { get; set; } = false;
         public bool IsCompleted { get; set; } = false;
+        public int CurrentExerciseIndex { get; set; } = 0;
 
         public void Reset(WorkoutSettings settings)
         {
@@ -20,6 +21,7 @@ namespace WorkoutTracker.Models
             IsWorkPhase = true;
             CurrentTimeSeconds = settings.WorkTimeSeconds;
             IsCompleted = false;
+            CurrentExerciseIndex = 0;
         }
     }
 }
