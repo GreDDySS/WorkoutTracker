@@ -146,7 +146,12 @@ namespace WorkoutTracker.ViewModels
 
                 if (selected.Count > 0)
                 {
-                    ExercisesSelected?.Invoke(this, selected);
+                    // Сохраняем выбранные упражнения в AppShell для передачи обратно
+                    AppShell.SelectedExercises = selected;
+                }
+                else
+                {
+                    AppShell.SelectedExercises = null;
                 }
 
                 await _navigationService.NavigateBackAsync();
