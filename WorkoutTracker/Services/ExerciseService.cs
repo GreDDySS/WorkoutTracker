@@ -65,6 +65,7 @@ namespace WorkoutTracker.Services
             try
             {
                 return await _context.Exercises
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(e => e.Id == id);
             }
             catch (Exception ex)
@@ -84,7 +85,19 @@ namespace WorkoutTracker.Services
                 }
                 else
                 {
-                    _context.Exercises.Update(exercise);
+                    var existingExercise = await _context.Exercises.FindAsync(exercise.Id);
+                    if (existingExercise != null)
+                    {
+                        existingExercise.Name = exercise.Name;
+                        existingExercise.WorkTimeSeconds = exercise.WorkTimeSeconds;
+                        existingExercise.RestTimeSeconds = exercise.RestTimeSeconds;
+                        existingExercise.IsCustom = exercise.IsCustom;
+                        existingExercise.Approaches = exercise.Approaches;
+                    }
+                    else
+                    {
+                        _context.Exercises.Update(exercise);
+                    }
                 }
 
                 await _context.SaveChangesAsync();
