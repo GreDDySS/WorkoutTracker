@@ -12,6 +12,12 @@ namespace WorkoutTracker.Services
             Settings = settings;
             CurrentState = new WorkoutState();
             CurrentState.Reset(Settings);
+            
+            if (Settings.IsProgram && Settings.ProgramExercises != null && Settings.ProgramExercises.Count > 0)
+            {
+                var firstExercise = Settings.ProgramExercises[0];
+                CurrentState.CurrentTimeSeconds = firstExercise.WorkTimeSeconds;
+            }
         }
 
         public void MoveToNextPhase()
@@ -19,19 +25,34 @@ namespace WorkoutTracker.Services
             if (CurrentState.IsWorkPhase)
             {
                 CurrentState.IsWorkPhase = false;
-                CurrentState.CurrentTimeSeconds = Settings.RestTimeSeconds;
+                var currentExercise = GetCurrentExercise();
+                CurrentState.CurrentTimeSeconds = currentExercise?.RestTimeSeconds ?? Settings.RestTimeSeconds;
             }
             else
             {
-                if (CurrentState.CurrentApproach < Settings.Approaches)
+                var currentExercise = GetCurrentExercise();
+                int approaches = currentExercise?.Approaches ?? Settings.Approaches;
+                
+                if (CurrentState.CurrentApproach < approaches)
                 {
                     CurrentState.CurrentApproach++;
                     CurrentState.IsWorkPhase = true;
-                    CurrentState.CurrentTimeSeconds = Settings.WorkTimeSeconds;
+                    CurrentState.CurrentTimeSeconds = currentExercise?.WorkTimeSeconds ?? Settings.WorkTimeSeconds;
                 }
                 else
                 {
-                    CurrentState.IsCompleted = true;
+                    if (Settings.IsProgram && CurrentState.CurrentExerciseIndex < Settings.ProgramExercises.Count - 1)
+                    {
+                        CurrentState.CurrentExerciseIndex++;
+                        CurrentState.CurrentApproach = 1;
+                        CurrentState.IsWorkPhase = true;
+                        var nextExercise = GetCurrentExercise();
+                        CurrentState.CurrentTimeSeconds = nextExercise?.WorkTimeSeconds ?? Settings.WorkTimeSeconds;
+                    }
+                    else
+                    {
+                        CurrentState.IsCompleted = true;
+                    }
                 }
             }
         }
@@ -41,13 +62,24 @@ namespace WorkoutTracker.Services
             if (!CurrentState.IsWorkPhase)
             {
                 CurrentState.IsWorkPhase = true;
-                CurrentState.CurrentTimeSeconds = Settings.WorkTimeSeconds;
+                var currentExercise = GetCurrentExercise();
+                CurrentState.CurrentTimeSeconds = currentExercise?.WorkTimeSeconds ?? Settings.WorkTimeSeconds;
             }
             else if (CurrentState.CurrentApproach > 1)
             {
                 CurrentState.CurrentApproach--;
                 CurrentState.IsWorkPhase = false;
-                CurrentState.CurrentTimeSeconds = Settings.RestTimeSeconds;
+                var currentExercise = GetCurrentExercise();
+                CurrentState.CurrentTimeSeconds = currentExercise?.RestTimeSeconds ?? Settings.RestTimeSeconds;
+            }
+            else if (Settings.IsProgram && CurrentState.CurrentExerciseIndex > 0)
+            {
+                CurrentState.CurrentExerciseIndex--;
+                var previousExercise = GetCurrentExercise();
+                int approaches = previousExercise?.Approaches ?? Settings.Approaches;
+                CurrentState.CurrentApproach = approaches;
+                CurrentState.IsWorkPhase = false;
+                CurrentState.CurrentTimeSeconds = previousExercise?.RestTimeSeconds ?? Settings.RestTimeSeconds;
             }
             CurrentState.IsCompleted = false;
         }
@@ -66,18 +98,53 @@ namespace WorkoutTracker.Services
         {
             int remainingSeconds = CurrentState.CurrentTimeSeconds;
 
-            if (CurrentState.IsWorkPhase)
+            if (Settings.IsProgram)
             {
-                remainingSeconds += Settings.RestTimeSeconds;
-                int remainingApproaches = Settings.Approaches - CurrentState.CurrentApproach;
-                remainingSeconds += Settings.WorkTimeSeconds * remainingApproaches;
-                remainingSeconds += Settings.RestTimeSeconds * remainingApproaches;
+                for (int i = CurrentState.CurrentExerciseIndex; i < Settings.ProgramExercises.Count; i++)
+                {
+                    var exercise = Settings.ProgramExercises[i];
+                    int approaches = exercise.Approaches;
+                    int workTime = exercise.WorkTimeSeconds;
+                    int restTime = exercise.RestTimeSeconds;
+
+                    if (i == CurrentState.CurrentExerciseIndex)
+                    {
+                        if (CurrentState.IsWorkPhase)
+                        {
+                            int remainingApproaches = approaches - CurrentState.CurrentApproach;
+                            remainingSeconds += restTime;
+                            remainingSeconds += workTime * remainingApproaches;
+                            remainingSeconds += restTime * remainingApproaches;
+                        }
+                        else
+                        {
+                            int remainingApproaches = approaches - CurrentState.CurrentApproach;
+                            remainingSeconds += workTime * remainingApproaches;
+                            remainingSeconds += restTime * remainingApproaches;
+                        }
+                    }
+                    else
+                    {
+                        remainingSeconds += workTime * approaches;
+                        remainingSeconds += restTime * approaches;
+                    }
+                }
             }
             else
             {
-                int remainingApproaches = Settings.Approaches - CurrentState.CurrentApproach;
-                remainingSeconds += Settings.WorkTimeSeconds * remainingApproaches;
-                remainingSeconds += Settings.RestTimeSeconds * remainingApproaches;
+                if (CurrentState.IsWorkPhase)
+                {
+                    remainingSeconds += Settings.RestTimeSeconds;
+                    int remainingApproaches = Settings.Approaches - CurrentState.CurrentApproach;
+                    remainingSeconds += Settings.WorkTimeSeconds * remainingApproaches;
+                    remainingSeconds += Settings.RestTimeSeconds * remainingApproaches;
+                }
+                else
+                {
+                    int remainingApproaches = Settings.Approaches - CurrentState.CurrentApproach;
+                    remainingSeconds += Settings.WorkTimeSeconds * remainingApproaches;
+                    remainingSeconds += Settings.RestTimeSeconds * remainingApproaches;
+                }
             }
 
             return remainingSeconds;
@@ -86,7 +153,29 @@ namespace WorkoutTracker.Services
         public string GetProgressText()
         {
             string phaseType = CurrentState.IsWorkPhase ? "РАБОТА" : "ОТДЫХ";
-            return $"{phaseType} {CurrentState.CurrentApproach}/{Settings.Approaches}";
+            
+            if (Settings.IsProgram)
+            {
+                var currentExercise = GetCurrentExercise();
+                string exerciseName = currentExercise?.ExerciseName ?? "";
+                int approaches = currentExercise?.Approaches ?? Settings.Approaches;
+                return $"{exerciseName} - {phaseType} {CurrentState.CurrentApproach}/{approaches} ({CurrentState.CurrentExerciseIndex + 1}/{Settings.ProgramExercises.Count})";
+            }
+            else
+            {
+                return $"{phaseType} {CurrentState.CurrentApproach}/{Settings.Approaches}";
+            }
+        }
+
+        private ProgramExerciseItem GetCurrentExercise()
+        {
+            if (Settings.IsProgram && Settings.ProgramExercises != null && 
+                CurrentState.CurrentExerciseIndex >= 0 && 
+                CurrentState.CurrentExerciseIndex < Settings.ProgramExercises.Count)
+            {
+                return Settings.ProgramExercises[CurrentState.CurrentExerciseIndex];
+            }
+            return null;
         }
     }
 }
