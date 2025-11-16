@@ -24,6 +24,13 @@ public partial class AddProgramPageView : ContentPage
     {
         base.OnAppearing();
         
+        // Проверяем, есть ли выбранные упражнения из страницы выбора
+        if (AppShell.SelectedExercises != null && AppShell.SelectedExercises.Count > 0)
+        {
+            _viewModel?.AddSelectedExercises(AppShell.SelectedExercises);
+            AppShell.SelectedExercises = null; // Очищаем после использования
+        }
+        
         if (!_hasLoadedProgram && !_viewModel.IsEditMode)
         {
             await LoadProgramFromNavigation();
@@ -47,9 +54,18 @@ public partial class AddProgramPageView : ContentPage
                 }
             }
 
+            // Не сбрасываем состояние, если пользователь уже начал заполнять форму
+            // (есть название программы или упражнения)
             if (!_hasLoadedProgram && !AppShell.ProgramIdToEdit.HasValue && !_viewModel.IsEditMode)
             {
-                _viewModel.ResetState();
+                // Сбрасываем только если форма действительно пустая
+                bool hasData = !string.IsNullOrWhiteSpace(_viewModel.ProgramName) || 
+                              (_viewModel.ProgramExercises?.Count ?? 0) > 0;
+                
+                if (!hasData)
+                {
+                    _viewModel.ResetState();
+                }
             }
         }
         catch (Exception ex)
@@ -61,6 +77,7 @@ public partial class AddProgramPageView : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        _hasLoadedProgram = false;
+        // Не сбрасываем _hasLoadedProgram, чтобы сохранить состояние при возврате
+        // _hasLoadedProgram = false;
     }
 }
