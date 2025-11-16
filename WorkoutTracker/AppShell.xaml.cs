@@ -6,6 +6,8 @@ namespace WorkoutTracker
     public partial class AppShell : Shell
     {
         public static WorkoutSettings NavigationSettings { get; set; }
+        public static int? ExerciseIdToEdit { get; set; }
+        public static int? ProgramIdToEdit { get; set; }
 
         public AppShell()
         {
