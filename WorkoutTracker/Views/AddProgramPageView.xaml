@@ -97,8 +97,8 @@
             <VerticalStackLayout Grid.Column="1"
                                  HorizontalOptions="Center"
                                  Spacing="5">
-                <Label Text="НОВАЯ ПРОГРАММА"
-                       TextColor="WHite"
+                <Label Text="{Binding Title}"
+                       TextColor="White"
                        FontSize="16"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>
