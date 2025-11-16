@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using WorkoutTracker.Base;
 using WorkoutTracker.Models;
@@ -116,15 +117,42 @@ namespace WorkoutTracker.ViewModels
             };
         }
 
+        public void AddSelectedExercises(List<SelectableExercise> selectedExercises)
+        {
+            if (selectedExercises == null || selectedExercises.Count == 0)
+                return;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                int addedCount = 0;
+                foreach (var exercise in selectedExercises)
+                {
+                    if (!ProgramExercises.Any(pe => pe.ExerciseId == exercise.Id))
+                    {
+                        var programExercise = ProgramExerciseItem.FromSelectableExercise(exercise);
+                        ProgramExercises.Add(programExercise);
+                        addedCount++;
+                        System.Diagnostics.Debug.WriteLine($"Добавлено упражнение: {exercise.Name} (Id: {exercise.Id})");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Упражнение {exercise.Name} (Id: {exercise.Id}) уже есть в списке");
+                    }
+                }
+                System.Diagnostics.Debug.WriteLine($"Всего добавлено упражнений: {addedCount}");
+            });
+        }
+
         private async void OnAddExercise(object parameter)
         {
             try
             {
+                // Очищаем предыдущие выбранные упражнения перед открытием страницы
+                AppShell.SelectedExercises = null;
+                
                 var selectPage = new SelectExercisesPageView();
                 var selectViewModel = new SelectExercisesViewModel();
                 selectPage.BindingContext = selectViewModel;
-
-                selectViewModel.ExercisesSelected += OnExercisesSelected;
 
                 await Shell.Current.Navigation.PushAsync(selectPage);
             }
@@ -132,22 +160,6 @@ namespace WorkoutTracker.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"Ошибка при открытии страницы выбора: {ex.Message}");
                 await _dialogService.ShowAlertAsync("Ошибка", "Не удалось открыть страницу выбора упражнений");
-            }
-        }
-
-        private void OnExercisesSelected(object sender, List<SelectableExercise> selectedExercises)
-        {
-            if (selectedExercises == null || selectedExercises.Count == 0)
-                return;
-
-            foreach (var exercise in selectedExercises)
-            {
-                
-                if (!ProgramExercises.Any(pe => pe.ExerciseId == exercise.Id))
-                {
-                    var programExercise = ProgramExerciseItem.FromSelectableExercise(exercise);
-                    ProgramExercises.Add(programExercise);
-                }
             }
         }
 
