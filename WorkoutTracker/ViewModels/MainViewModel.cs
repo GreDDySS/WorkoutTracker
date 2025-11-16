@@ -2,12 +2,14 @@
 using System.Windows.Input;
 using WorkoutTracker.Base;
 using WorkoutTracker.Models;
+using WorkoutTracker.Services;
 
 namespace WorkoutTracker.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private WorkoutSettings _settings = new WorkoutSettings();
+        private readonly ISettingsService _settingsService;
+        private WorkoutSettings _settings;
 
         public WorkoutSettings Settings
         {
@@ -36,8 +38,17 @@ namespace WorkoutTracker.ViewModels
         public ICommand ChangeWorkTimeCommand { get; }
         public ICommand ChangeRestTimeCommand { get; }
 
-        public MainViewModel()
+        public MainViewModel(ISettingsService settingsService)
         {
+            _settingsService = settingsService;
+            
+            _settings = new WorkoutSettings
+            {
+                Approaches = _settingsService.DefaultApproaches,
+                WorkTimeSeconds = _settingsService.DefaultWorkTimeSeconds,
+                RestTimeSeconds = _settingsService.DefaultRestTimeSeconds
+            };
+
             StartWorkoutCommand = new RelayCommand(OnStartWorkout);
             ChangeApproachesCommand = new RelayCommand(OnChangeApproaches);
             ChangeWorkTimeCommand = new RelayCommand(OnChangeWorkTime);
