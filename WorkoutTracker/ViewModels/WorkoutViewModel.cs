@@ -17,6 +17,9 @@ namespace WorkoutTracker.ViewModels
         public ICommand CreateWorkoutCommand { get; set; }
         public ICommand SwitchToExercisesCommand { get; set; }
         public ICommand SwitchToProgramsCommand { get; set; }
+        public ICommand EditExerciseCommand { get; set; }
+        public ICommand EditProgramCommand { get; set; }
+        public ICommand StartProgramCommand { get; set; }
 
         public ObservableCollection<object> Exercises { get; set; }
         public ObservableCollection<object> Programs { get; set; }
@@ -73,6 +76,9 @@ namespace WorkoutTracker.ViewModels
             CreateWorkoutCommand = new Command(CreateWorkout);
             SwitchToExercisesCommand = new Command(() => SelectedTab = 0);
             SwitchToProgramsCommand = new Command(() => SelectedTab = 1);
+            EditExerciseCommand = new Command<int>(EditExercise);
+            EditProgramCommand = new Command<int>(EditProgram);
+            StartProgramCommand = new Command<int>(StartProgram);
 
             LoadData();
         }
@@ -117,11 +123,74 @@ namespace WorkoutTracker.ViewModels
         {
             if (SelectedTab == 0)
             {
+                AppShell.ExerciseIdToEdit = null;
                 await Shell.Current.GoToAsync("AddExercisePage");
             }
             else
             {
+                AppShell.ProgramIdToEdit = null;
                 await Shell.Current.GoToAsync("AddProgramPage");
+            }
+        }
+
+        private async void EditExercise(int exerciseId)
+        {
+            AppShell.ExerciseIdToEdit = exerciseId;
+            await Shell.Current.GoToAsync("AddExercisePage");
+        }
+
+        private async void EditProgram(int programId)
+        {
+            AppShell.ProgramIdToEdit = programId;
+            await Shell.Current.GoToAsync("AddProgramPage");
+        }
+
+        private async void StartProgram(int programId)
+        {
+            try
+            {
+                var program = await _programService.GetProgramByIdAsync(programId);
+                if (program == null || program.Exercises == null || program.Exercises.Count == 0)
+                {
+                    return;
+                }
+
+                var firstExercise = program.Exercises.FirstOrDefault()?.Exercise;
+                if (firstExercise == null)
+                {
+                    return;
+                }
+
+                var programExercises = new List<Models.ProgramExerciseItem>();
+                foreach (var programExercise in program.Exercises)
+                {
+                    if (programExercise.Exercise != null)
+                    {
+                        programExercises.Add(new Models.ProgramExerciseItem
+                        {
+                            ExerciseId = programExercise.ExerciseId,
+                            ExerciseName = programExercise.Exercise.Name,
+                            WorkTimeSeconds = programExercise.Exercise.WorkTimeSeconds,
+                            RestTimeSeconds = programExercise.Exercise.RestTimeSeconds,
+                            Approaches = programExercise.Approaches
+                        });
+                    }
+                }
+
+                var settings = new Models.WorkoutSettings
+                {
+                    Approaches = programExercises.First().Approaches,
+                    WorkTimeSeconds = firstExercise.WorkTimeSeconds,
+                    RestTimeSeconds = firstExercise.RestTimeSeconds,
+                    ProgramExercises = programExercises
+                };
+
+                AppShell.NavigationSettings = settings;
+                await Shell.Current.GoToAsync("TimerPage");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при запуске программы: {ex.Message}");
             }
         }
 
