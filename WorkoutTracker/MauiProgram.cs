@@ -2,6 +2,7 @@
 using WorkoutTracker.Data;
 using WorkoutTracker.Services;
 using WorkoutTracker.ViewModels;
+using WorkoutTracker.Views;
 
 namespace WorkoutTracker
 {
@@ -41,8 +42,14 @@ namespace WorkoutTracker
             builder.Services.AddSingleton<IProgramService, ProgramService>();
             builder.Services.AddSingleton<ITimeAdjustmentService, TimeAdjustmentService>();
             builder.Services.AddSingleton<IWorkoutHistoryService, WorkoutHistoryService>();
+            builder.Services.AddSingleton<ISettingsService, SettingsService>();
 
             builder.Services.AddTransient<TimerViewModel>();
+            builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<MainViewModel>();
+            
+            builder.Services.AddTransient<MainPageView>();
+            builder.Services.AddTransient<SettingsPageView>();
 
 #if DEBUG
             builder.Logging.AddDebug();
