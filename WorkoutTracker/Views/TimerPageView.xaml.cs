@@ -23,8 +23,9 @@ public partial class TimerPageView : ContentPage
         var timerService = Handler.MauiContext.Services.GetService<IWorkoutTimerService>();
         var stateService = Handler.MauiContext.Services.GetService<IWorkoutStateService>();
         var navigationService = Handler.MauiContext.Services.GetService<INavigationService>();
+        var historyService = Handler.MauiContext.Services.GetService<IWorkoutHistoryService>();
 
-        _viewModel = new TimerViewModel(timerService, stateService, navigationService, settings);
+        _viewModel = new TimerViewModel(timerService, stateService, navigationService, historyService, settings);
         BindingContext = _viewModel;
     }
 

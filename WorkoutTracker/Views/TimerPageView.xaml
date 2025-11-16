@@ -5,21 +5,42 @@
              x:Class="WorkoutTracker.Views.TimerPageView"
              x:DataType="vm:TimerViewModel"
              Title="Таймер"
-             BackgroundColor="#2E7D32"
              Shell.NavBarIsVisible="False">
+    <ContentPage.Triggers>
+        <DataTrigger TargetType="ContentPage" Binding="{Binding IsWorkPhase}" Value="True">
+            <Setter Property="BackgroundColor" Value="#2E7D32"/>
+        </DataTrigger>
+        <DataTrigger TargetType="ContentPage" Binding="{Binding IsWorkPhase}" Value="False">
+            <Setter Property="BackgroundColor" Value="#1976D2"/>
+        </DataTrigger>
+    </ContentPage.Triggers>
     
     <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
+        <Grid.Triggers>
+            <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
+                <Setter Property="BackgroundColor" Value="#2E7D32"/>
+            </DataTrigger>
+            <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
+                <Setter Property="BackgroundColor" Value="#1976D2"/>
+            </DataTrigger>
+        </Grid.Triggers>
         
         <!-- Header -->
         <Grid Grid.Row="0" 
-              ColumnDefinitions="Auto, *, Auto" 
-              Padding="15,15,15,20"
-              BackgroundColor="#2E7D32">
+              ColumnDefinitions="Auto, *" 
+              Padding="15,15,15,20">
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
+                    <Setter Property="BackgroundColor" Value="#2E7D32"/>
+                </DataTrigger>
+                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
+                    <Setter Property="BackgroundColor" Value="#1976D2"/>
+                </DataTrigger>
+            </Grid.Triggers>
             
             <!-- Close Button -->
             <Button Grid.Column="0"
                     Command="{Binding CloseCommand}"
-                    BackgroundColor="#4CAF50"
                     CornerRadius="8"
                     WidthRequest="40"
                     HeightRequest="40"
@@ -28,7 +49,16 @@
                     Text="×"
                     TextColor="White"
                     FontSize="24"
-                    FontAttributes="Bold"/>
+                    FontAttributes="Bold">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#4CAF50"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
+                        <Setter Property="BackgroundColor" Value="#2196F3"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
             
             <!-- Center: Remaining Time -->
             <VerticalStackLayout Grid.Column="1"
@@ -45,19 +75,6 @@
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
-            
-            <!-- Chat Button -->
-            <Button Grid.Column="2"
-                    Command="{Binding ChatCommand}"
-                    BackgroundColor="#4CAF50"
-                    CornerRadius="8"
-                    WidthRequest="40"
-                    HeightRequest="40"
-                    Padding="0"
-                    BorderWidth="0"
-                    Text="💬"
-                    TextColor="White"
-                    FontSize="18"/>
         </Grid>
         
         <!-- Main Content -->
@@ -84,13 +101,19 @@
         <!-- Footer Controls -->
         <Grid Grid.Row="2"
               ColumnDefinitions="Auto, *, Auto"
-              Padding="15,20,15,30"
-              BackgroundColor="#2E7D32">
+              Padding="15,20,15,30">
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
+                    <Setter Property="BackgroundColor" Value="#2E7D32"/>
+                </DataTrigger>
+                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
+                    <Setter Property="BackgroundColor" Value="#1976D2"/>
+                </DataTrigger>
+            </Grid.Triggers>
             
             <!-- Previous Button -->
             <Button Grid.Column="0"
                     Command="{Binding PreviousCommand}"
-                    BackgroundColor="#4CAF50"
                     CornerRadius="8"
                     WidthRequest="50"
                     HeightRequest="50"
@@ -99,7 +122,16 @@
                     Text="««"
                     TextColor="White"
                     FontSize="20"
-                    FontAttributes="Bold"/>
+                    FontAttributes="Bold">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#4CAF50"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
+                        <Setter Property="BackgroundColor" Value="#2196F3"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
             
             <!-- Pause Button -->
             <Button Grid.Column="1"
@@ -116,7 +148,6 @@
             <!-- Next Button -->
             <Button Grid.Column="2"
                     Command="{Binding NextCommand}"
-                    BackgroundColor="#4CAF50"
                     CornerRadius="8"
                     WidthRequest="50"
                     HeightRequest="50"
@@ -125,7 +156,16 @@
                     Text="»»"
                     TextColor="White"
                     FontSize="20"
-                    FontAttributes="Bold"/>
+                    FontAttributes="Bold">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#4CAF50"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
+                        <Setter Property="BackgroundColor" Value="#2196F3"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
         </Grid>
     </Grid>
 </ContentPage>
