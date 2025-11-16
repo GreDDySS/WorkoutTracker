@@ -50,7 +50,7 @@
             <VerticalStackLayout Grid.Column="1"
                                  HorizontalOptions="Center"
                                  Spacing="5">
-                <Label Text="НОВОЕ УПРАЖНЕНИЕ"
+                <Label Text="{Binding Title}"
                        TextColor="White"
                        FontSize="16"
                        FontAttributes="Bold"
