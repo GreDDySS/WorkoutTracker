@@ -16,6 +16,8 @@ namespace WorkoutTracker.ViewModels
         private string _exerciseName = string.Empty;
         private int _workTimeSeconds = 20;
         private int _restTimeSeconds = 10;
+        private int _exerciseId = 0;
+        private bool _isEditMode = false;
 
         public string ExerciseName
         {
@@ -55,8 +57,21 @@ namespace WorkoutTracker.ViewModels
             }
         }
 
+        public int ExerciseId
+        {
+            get => _exerciseId;
+            set => SetProperty(ref _exerciseId, value);
+        }
+
+        public bool IsEditMode
+        {
+            get => _isEditMode;
+            set => SetProperty(ref _isEditMode, value);
+        }
+
         public string WorkTimeDisplay => TimeFormatter.FormatTime(WorkTimeSeconds);
         public string RestTimeDisplay => TimeFormatter.FormatTime(RestTimeSeconds);
+        public string Title => IsEditMode ? "РЕДАКТИРОВАТЬ УПРАЖНЕНИЕ" : "НОВОЕ УПРАЖНЕНИЕ";
 
         public ICommand CloseCommand { get; }
         public ICommand SaveCommand => _saveCommand;
@@ -114,6 +129,7 @@ namespace WorkoutTracker.ViewModels
 
             var exercise = new Exercise
             {
+                Id = ExerciseId,
                 Name = ExerciseName,
                 WorkTimeSeconds = WorkTimeSeconds,
                 RestTimeSeconds = RestTimeSeconds,
@@ -122,6 +138,42 @@ namespace WorkoutTracker.ViewModels
 
             await _exerciseService.SaveExerciseAsync(exercise);
             await _navigationService.NavigateBackAsync();
+        }
+
+        public async Task LoadExerciseAsync(int exerciseId)
+        {
+            try
+            {
+                ExerciseId = exerciseId;
+                IsEditMode = true;
+                OnPropertyChanged(nameof(IsEditMode));
+                OnPropertyChanged(nameof(Title));
+
+                var exercise = await _exerciseService.GetExerciseByIdAsync(exerciseId);
+                if (exercise != null)
+                {
+                    ExerciseName = exercise.Name;
+                    WorkTimeSeconds = exercise.WorkTimeSeconds;
+                    RestTimeSeconds = exercise.RestTimeSeconds;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке упражнения: {ex.Message}");
+            }
+        }
+
+        public void ResetState()
+        {
+            ExerciseId = 0;
+            IsEditMode = false;
+            ExerciseName = string.Empty;
+            WorkTimeSeconds = 20;
+            RestTimeSeconds = 10;
+            OnPropertyChanged(nameof(IsEditMode));
+            OnPropertyChanged(nameof(Title));
+            OnPropertyChanged(nameof(WorkTimeDisplay));
+            OnPropertyChanged(nameof(RestTimeDisplay));
         }
     }
 }
