@@ -13,7 +13,7 @@
     <TabBar>
         <ShellContent Title="Главная" Icon="main.png" ContentTemplate="{DataTemplate Views:MainPageView}"/>
         <ShellContent Title="Тренировки" Icon="settings.png" ContentTemplate="{DataTemplate Views:WorkoutPageView}"/>
-        
+        <ShellContent Title="Статистика" Icon="stats.png" ContentTemplate="{DataTemplate Views:StatsPageView}"/>
     </TabBar>
 
 </Shell>
