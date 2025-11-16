@@ -15,6 +15,22 @@ namespace WorkoutTracker.ViewModels
         private RelayCommand _saveCommand;
 
         private string _programName = string.Empty;
+        private int _programId = 0;
+        private bool _isEditMode = false;
+
+        public int ProgramId
+        {
+            get => _programId;
+            set => SetProperty(ref _programId, value);
+        }
+
+        public bool IsEditMode
+        {
+            get => _isEditMode;
+            set => SetProperty(ref _isEditMode, value);
+        }
+
+        public string Title => IsEditMode ? "РЕДАКТИРОВАТЬ ПРОГРАММУ" : "НОВАЯ ПРОГРАММА";
 
         public string ProgramName
         {
@@ -92,6 +108,7 @@ namespace WorkoutTracker.ViewModels
         {
             return new Models.Program
             {
+                Id = ProgramId,
                 Name = ProgramName,
                 Exercises = ProgramExercises
                     .Select(pe => pe.ToProgramExercise())
@@ -140,6 +157,54 @@ namespace WorkoutTracker.ViewModels
             {
                 ProgramExercises.Remove(exercise);
             }
+        }
+
+        public async Task LoadProgramAsync(int programId)
+        {
+            try
+            {
+                ProgramId = programId;
+                IsEditMode = true;
+                OnPropertyChanged(nameof(IsEditMode));
+                OnPropertyChanged(nameof(Title));
+
+                var program = await _programService.GetProgramByIdAsync(programId);
+                if (program != null)
+                {
+                    ProgramName = program.Name;
+                    
+                    ProgramExercises.Clear();
+                    foreach (var programExercise in program.Exercises)
+                    {
+                        if (programExercise.Exercise != null)
+                        {
+                            var item = new ProgramExerciseItem
+                            {
+                                ExerciseId = programExercise.ExerciseId,
+                                ExerciseName = programExercise.Exercise.Name,
+                                WorkTimeSeconds = programExercise.Exercise.WorkTimeSeconds,
+                                RestTimeSeconds = programExercise.Exercise.RestTimeSeconds,
+                                Approaches = programExercise.Approaches
+                            };
+                            ProgramExercises.Add(item);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке программы: {ex.Message}");
+            }
+        }
+
+        public void ResetState()
+        {
+            ProgramId = 0;
+            IsEditMode = false;
+            ProgramName = string.Empty;
+            ProgramExercises.Clear();
+            OnPropertyChanged(nameof(IsEditMode));
+            OnPropertyChanged(nameof(Title));
         }
 
     }
