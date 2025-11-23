@@ -75,16 +75,12 @@ namespace WorkoutTracker.ViewModels
             var days = new List<DateTime>();
             var firstDayOfMonth = _currentMonth;
             var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
-            
-            // Начинаем с понедельника недели, в которой находится первое число месяца
+
             var startDate = firstDayOfMonth;
             var dayOfWeek = (int)startDate.DayOfWeek;
-            // В C# DayOfWeek: Sunday = 0, Monday = 1, ..., Saturday = 6
-            // Нужно преобразовать в: Monday = 0, Tuesday = 1, ..., Sunday = 6
             var adjustedDayOfWeek = dayOfWeek == 0 ? 6 : dayOfWeek - 1;
             startDate = startDate.AddDays(-adjustedDayOfWeek);
 
-            // Добавляем 42 дня (6 недель)
             for (int i = 0; i < 42; i++)
             {
                 days.Add(startDate.AddDays(i));
@@ -100,7 +96,6 @@ namespace WorkoutTracker.ViewModels
                 _workoutDays = await _historyService.GetWorkoutDaysInMonthAsync(_currentMonth.Year, _currentMonth.Month);
                 OnPropertyChanged(nameof(CurrentMonthName));
                 OnPropertyChanged(nameof(CurrentMonth));
-                // Уведомляем об изменении данных для обновления календаря
                 OnPropertyChanged(nameof(WorkoutDays));
             }
             catch (Exception ex)
@@ -109,7 +104,6 @@ namespace WorkoutTracker.ViewModels
             }
         }
 
-        // Свойство для уведомления об изменении данных
         public Dictionary<DateTime, int> WorkoutDays => _workoutDays;
 
         private async void LoadWorkoutsForDate(DateTime date)
