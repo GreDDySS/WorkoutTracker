@@ -3,169 +3,110 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
              xmlns:models="clr-namespace:WorkoutTracker.Models"
+             xmlns:converters="clr-namespace:WorkoutTracker.Converters"
              x:Class="WorkoutTracker.Views.WorkoutPageView"
              x:DataType="vm:WorkoutViewModel"
-             xmlns:converters="clr-namespace:WorkoutTracker.Converters"
-             Title="Тренировки">
+             Title="Библиотека">
 
     <ContentPage.Resources>
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
 
         <DataTemplate x:Key="ExerciseItemTemplate" x:DataType="models:Exercise">
-            <Frame Style="{StaticResource FrameListItem}">
+            <Border Style="{StaticResource CardStyle}">
                 <Grid ColumnDefinitions="*, Auto">
-                    <VerticalStackLayout Grid.Column="0" 
-                                         Spacing="{StaticResource SpacingXSmall}">
-                        <Label Text="{Binding Name}" 
-                               Style="{StaticResource LabelBody}"
-                               FontAttributes="Bold"/>
-                        <Label Text="{Binding WorkTimeSeconds, StringFormat='Работа: {0}с'}" 
-                               Style="{StaticResource LabelSubtle}"/>
-                        <Label Text="{Binding RestTimeSeconds, StringFormat='Отдых: {0}с'}" 
-                               Style="{StaticResource LabelSubtle}"/>
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="{Binding Name}" Style="{StaticResource LabelBody}" FontAttributes="Bold"/>
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="{Binding WorkTimeSeconds, StringFormat='Работа: {0}с'}" Style="{StaticResource LabelCaption}" TextColor="{StaticResource AccentWork}"/>
+                            <Label Text="•" TextColor="{StaticResource TextSecondary}"/>
+                            <Label Text="{Binding RestTimeSeconds, StringFormat='Отдых: {0}с'}" Style="{StaticResource LabelCaption}" TextColor="{StaticResource AccentRest}"/>
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
-                    <Button Grid.Column="1"
-                            ImageSource="edit.png"
-                            WidthRequest="50"
-                            HeightRequest="50"
-                            BackgroundColor="{StaticResource TransparentColor}"
-                            BorderColor="{StaticResource TransparentColor}"
-                            Padding="10,0"
-                            Clicked="OnEditExerciseClicked"
-                            CommandParameter="{Binding Id}"/>
+
+                    <Button Grid.Column="1" Text="✎" 
+                            BackgroundColor="{StaticResource BackgroundInput}" TextColor="{StaticResource TextPrimary}"
+                            WidthRequest="40" HeightRequest="40" CornerRadius="20" Padding="0"
+                            Clicked="OnEditExerciseClicked" CommandParameter="{Binding Id}"/>
                 </Grid>
-            </Frame>
+            </Border>
         </DataTemplate>
 
         <DataTemplate x:Key="ProgramItemTemplate" x:DataType="models:Program">
-            <Frame Style="{StaticResource FrameListItem}">
-                <Grid ColumnDefinitions="*, Auto, Auto">
-                    <VerticalStackLayout Grid.Column="0" 
-                                         Spacing="{StaticResource SpacingXSmall}">
-                        <Label Text="{Binding Name}" 
-                               Style="{StaticResource LabelBody}"
-                               FontAttributes="Bold"/>
-                        <Label Text="{Binding Exercises.Count, StringFormat='Упражнений: {0}'}" 
-                               Style="{StaticResource LabelSubtle}"/>
+            <Border Style="{StaticResource CardStyle}">
+                <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10">
+                    <VerticalStackLayout VerticalOptions="Center">
+                        <Label Text="{Binding Name}" Style="{StaticResource LabelBody}" FontAttributes="Bold"/>
+                        <Label Text="{Binding Exercises.Count, StringFormat='Упражнений: {0}'}" Style="{StaticResource LabelCaption}"/>
                     </VerticalStackLayout>
-                    <Button Grid.Column="1"
-                            ImageSource="play.png"
-                            WidthRequest="50"
-                            HeightRequest="50"
-                            BackgroundColor="{StaticResource TransparentColor}"
-                            BorderColor="{StaticResource TransparentColor}"
-                            Padding="10,0"
-                            Clicked="OnStartProgramClicked"
-                            CommandParameter="{Binding Id}"/>
-                    <Button Grid.Column="2"
-                            ImageSource="edit.png"
-                            WidthRequest="50"
-                            HeightRequest="50"
-                            BackgroundColor="{StaticResource TransparentColor}"
-                            BorderColor="{StaticResource TransparentColor}"
-                            Padding="10,0"
-                            Clicked="OnEditProgramClicked"
-                            CommandParameter="{Binding Id}"/>
+
+                    <Button Grid.Column="1" Text="▶" 
+                            Background="{StaticResource GradientMain}" TextColor="White"
+                            WidthRequest="44" HeightRequest="44" CornerRadius="22" Padding="0"
+                            Clicked="OnStartProgramClicked" CommandParameter="{Binding Id}"/>
+
+                    <Button Grid.Column="2" Text="✎" 
+                             BackgroundColor="{StaticResource BackgroundInput}" TextColor="{StaticResource TextPrimary}"
+                            WidthRequest="44" HeightRequest="44" CornerRadius="22" Padding="0"
+                            Clicked="OnEditProgramClicked" CommandParameter="{Binding Id}"/>
                 </Grid>
-            </Frame>
+            </Border>
         </DataTemplate>
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, *">
-        
-        <Grid Grid.Row="0" 
-              ColumnDefinitions="*,*" 
-              ColumnSpacing="0" 
-              HeightRequest="50" 
-              BackgroundColor="{StaticResource BackgroundTertiary}">
-            
-            <VerticalStackLayout Grid.Column="0" Padding="0,10">
-                
-                <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SwitchToExercisesCommand}"/>
-                </VerticalStackLayout.GestureRecognizers>
-                
-                <HorizontalStackLayout Spacing="{StaticResource SpacingXSmall}" HorizontalOptions="Center">
-                    <Image Source="dumbbell.png" HeightRequest="30" WidthRequest="30"/>
-                    <Label Text="Упражнения" Style="{StaticResource LabelBody}" VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-                <BoxView Color="{StaticResource AccentPrimary}"
-                         HeightRequest="2"
-                         Margin="0,8,0,0"
-                         WidthRequest="50"
-                         IsVisible="{Binding IsExercisesTabVisible}"/>
-                
-            </VerticalStackLayout>
+        <Grid Grid.Row="0" ColumnDefinitions="*, *" Padding="20,10" ColumnSpacing="15">
+            <Button Grid.Column="0" Text="Упражнения"
+                    Command="{Binding SwitchToExercisesCommand}"
+                    CornerRadius="16" HeightRequest="40" Padding="0" FontSize="14" FontAttributes="Bold">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsExercisesTabVisible}" Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundInput}"/>
+                        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                        <Setter Property="BorderColor" Value="{StaticResource AccentMain}"/>
+                        <Setter Property="BorderWidth" Value="2"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsExercisesTabVisible}" Value="False">
+                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                        <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
+                        <Setter Property="BorderWidth" Value="0"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
 
-            <VerticalStackLayout Grid.Column="1" Padding="0,10">
-                
-                <VerticalStackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SwitchToProgramsCommand}"/>
-                </VerticalStackLayout.GestureRecognizers>
-                
-                <HorizontalStackLayout Spacing="{StaticResource SpacingXSmall}" HorizontalOptions="Center">
-                    <Image Source="training.png" HeightRequest="30" WidthRequest="30"/>
-                    <Label Text="Программы" Style="{StaticResource LabelBody}" VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-                <BoxView Color="{StaticResource AccentPrimary}"
-                         HeightRequest="2"
-                         Margin="0,8,0,0"
-                         WidthRequest="50"
-                         IsVisible="{Binding IsProgramsTabVisible}"/>
-            </VerticalStackLayout>
+            <Button Grid.Column="1" Text="Программы"
+                    Command="{Binding SwitchToProgramsCommand}"
+                    CornerRadius="16" HeightRequest="40" Padding="0" FontSize="14" FontAttributes="Bold">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsProgramsTabVisible}" Value="True">
+                        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundInput}"/>
+                        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
+                        <Setter Property="BorderColor" Value="{StaticResource AccentMain}"/>
+                        <Setter Property="BorderWidth" Value="2"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsProgramsTabVisible}" Value="False">
+                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                        <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
+                        <Setter Property="BorderWidth" Value="0"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
         </Grid>
 
-        <Grid Grid.Row="1" Padding="{StaticResource SpacingLarge}">
-            
-            <Grid IsVisible="{Binding IsExercisesTabVisible}">
-                
-                <VerticalStackLayout VerticalOptions="Center"
-                                     HorizontalOptions="Center"
-                                     Spacing="{StaticResource SpacingSmall}"
-                                     IsVisible="{Binding HasExercises, Converter={StaticResource InvertedBoolConverter}}">
-                    <Label Text="Нет упражнений"
-                           Style="{StaticResource LabelBody}"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"/>
-                    <Label Text="Ваши упражнения появятся здесь."
-                           Style="{StaticResource LabelCaption}"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
+        <Grid Grid.Row="1" Padding="20,0">
+            <CollectionView IsVisible="{Binding IsExercisesTabVisible}"
+                            ItemsSource="{Binding Exercises}"
+                            ItemTemplate="{StaticResource ExerciseItemTemplate}"
+                            ItemsLayout="VerticalList" EmptyView="Нет упражнений"/>
 
-                <CollectionView ItemsSource="{Binding Exercises}"
-                                ItemTemplate="{StaticResource ExerciseItemTemplate}"
-                                IsVisible="{Binding HasExercises}"
-                                SelectionMode="None"/>
-            </Grid>
+            <CollectionView IsVisible="{Binding IsProgramsTabVisible}"
+                            ItemsSource="{Binding Programs}"
+                            ItemTemplate="{StaticResource ProgramItemTemplate}"
+                            ItemsLayout="VerticalList" EmptyView="Нет программ"/>
 
-            <Grid IsVisible="{Binding IsProgramsTabVisible}">
-                
-                <VerticalStackLayout VerticalOptions="Center" 
-                                     HorizontalOptions="Center" 
-                                     Spacing="{StaticResource SpacingSmall}"
-                                     IsVisible="{Binding HasPrograms, Converter={StaticResource InvertedBoolConverter}}">
-                    <Label Text="Нет программ" 
-                           Style="{StaticResource LabelBody}"
-                           FontAttributes="Bold" 
-                           HorizontalOptions="Center"/>
-                    <Label Text="Ваши программы появятся здесь." 
-                           Style="{StaticResource LabelCaption}"
-                           HorizontalOptions="Center" 
-                           HorizontalTextAlignment="Center"/>
-                </VerticalStackLayout>
-
-                <CollectionView ItemsSource="{Binding Programs}"
-                                ItemTemplate="{StaticResource ProgramItemTemplate}"
-                                IsVisible="{Binding HasPrograms}"
-                                SelectionMode="None"/>
-            </Grid>
-
-            <Button Text="+"
-                    Style="{StaticResource ButtonFab}"
-                    VerticalOptions="End"
-                    HorizontalOptions="End"
-                    Margin="0,0,10,10"
+            <Button Text="+" 
+                    Style="{StaticResource ButtonPrimary}"
+                    WidthRequest="60" HeightRequest="60" CornerRadius="30" FontSize="30" Padding="0"
+                    VerticalOptions="End" HorizontalOptions="End" Margin="0,0,10,20"
                     Command="{Binding CreateWorkoutCommand}"/>
         </Grid>
     </Grid>

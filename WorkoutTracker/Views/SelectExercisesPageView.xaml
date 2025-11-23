@@ -10,106 +10,68 @@
 
     <ContentPage.Resources>
         <DataTemplate x:Key="ExerciseSelectTemplate" x:DataType="models:SelectableExercise">
-            <Frame Style="{StaticResource FrameCard}"
-                   Margin="0,5,0,5">
+            <Border Style="{StaticResource CardStyle}" Padding="15">
                 <Grid ColumnDefinitions="Auto, *">
-                    <CheckBox Grid.Column="0"
-                              IsChecked="{Binding IsSelected}"
-                              VerticalOptions="Center"
-                              Margin="0,0,15,0"/>
-                    <VerticalStackLayout Grid.Column="1" 
-                                         Spacing="3">
-                        <Label Text="{Binding Name}"
-                               Style="{StaticResource LabelBody}"
-                               FontAttributes="Bold"/>
-                        <Label Text="{Binding Details}"
-                               Style="{StaticResource LabelSubtle}"/>
+                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" Color="{StaticResource AccentMain}" VerticalOptions="Center" Margin="0,0,15,0"/>
+
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                        <Label Text="{Binding Name}" Style="{StaticResource LabelBody}" FontAttributes="Bold"/>
+                        <Label Text="{Binding Details}" Style="{StaticResource LabelCaption}"/>
                     </VerticalStackLayout>
                 </Grid>
-            </Frame>
+            </Border>
         </DataTemplate>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
+    <Grid RowDefinitions="Auto, *, Auto" Padding="20,10">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, 40" HeightRequest="60" Margin="0,0,0,10">
+            <Button Grid.Column="0" Command="{Binding CloseCommand}" Text="✕"
+                    BackgroundColor="{StaticResource BackgroundInput}" TextColor="{StaticResource TextSecondary}"
+                    CornerRadius="20" WidthRequest="40" HeightRequest="40" Padding="0"/>
 
-        <Grid Grid.Row="0" 
-              ColumnDefinitions="Auto, *, Auto" 
-              Padding="15,15,15,20"
-              BackgroundColor="{StaticResource BackgroundTertiary}">
-
-            <Button Grid.Column="0"
-                    Command="{Binding CloseCommand}"
-                    Style="{StaticResource ButtonClose}"/>
-
-            <VerticalStackLayout Grid.Column="1"
-                                 HorizontalOptions="Center"
-                                 Spacing="{StaticResource SpacingXSmall}">
-                <Label Text="ВЫБРАТЬ УПРАЖНЕНИЯ"
-                       Style="{StaticResource LabelBody}"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-
-            <BoxView Grid.Column="2"
-                     WidthRequest="40"
-                     HeightRequest="40"
-                     Color="{StaticResource TransparentColor}"/>
+            <Label Grid.Column="1" Text="Добавить упражнения" Style="{StaticResource LabelTitle}" 
+                   FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
 
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="{StaticResource SpacingLarge}" Spacing="{StaticResource SpacingMedium}">
+            <VerticalStackLayout Spacing="20" Padding="0,0,0,20">
 
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="СВОИ"
-                           Style="{StaticResource LabelBody}"
-                           FontAttributes="Bold"
-                           Margin="0,0,0,5"/>
+                    <Label Text="МОИ УПРАЖНЕНИЯ" Style="{StaticResource LabelCaption}" FontAttributes="Bold" Margin="5,0"/>
 
                     <CollectionView ItemsSource="{Binding CustomExercises}"
                                     ItemTemplate="{StaticResource ExerciseSelectTemplate}"
                                     SelectionMode="None"/>
 
-                    <VerticalStackLayout IsVisible="{Binding HasNoCustomExercises}"
-                                         VerticalOptions="Center"
-                                         HorizontalOptions="Center"
-                                         Spacing="{StaticResource SpacingXSmall}"
-                                         Margin="0,10">
-                        
-                        <Label Text="Нет своих упражнений"
-                               Style="{StaticResource LabelCaption}"
-                               HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
+                    <Label IsVisible="{Binding HasNoCustomExercises}" 
+                           Text="Нет своих упражнений" 
+                           Style="{StaticResource LabelCaption}" HorizontalOptions="Center" Opacity="0.5"/>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="{StaticResource SpacingSmall}">
-                    <Label Text="СИСТЕМНЫЕ"
-                           Style="{StaticResource LabelBody}"
-                           FontAttributes="Bold"
-                           Margin="0,10,0,5"/>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="БАЗА УПРАЖНЕНИЙ" Style="{StaticResource LabelCaption}" FontAttributes="Bold" Margin="5,0"/>
 
                     <CollectionView ItemsSource="{Binding SystemExercises}"
                                     ItemTemplate="{StaticResource ExerciseSelectTemplate}"
                                     SelectionMode="None"/>
 
-                    <VerticalStackLayout IsVisible="{Binding HasNoSystemExercises}"
-                                         VerticalOptions="Center"
-                                         HorizontalOptions="Center"
-                                         Spacing="{StaticResource SpacingXSmall}"
-                                         Margin="0,10">
-                        <Label Text="Нет системных упражнений"
-                               Style="{StaticResource LabelCaption}"
-                               HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
+                    <Label IsVisible="{Binding HasNoSystemExercises}" 
+                           Text="База пуста" 
+                           Style="{StaticResource LabelCaption}" HorizontalOptions="Center" Opacity="0.5"/>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
-        <Grid Grid.Row="2"
-              Padding="15,20,15,30">
-            <Button Command="{Binding AddSelectedCommand}"
-                    Text="{Binding AddButtonText}"
-                    Style="{StaticResource ButtonPrimary}"
-                    IsEnabled="{Binding HasSelectedExercises}"/>
-        </Grid>
+        <Button Grid.Row="2" Command="{Binding AddSelectedCommand}"
+                Text="{Binding AddButtonText}"
+                Style="{StaticResource ButtonPrimary}"
+                Margin="0,0,0,20"
+                IsEnabled="{Binding HasSelectedExercises}">
+            <Button.Triggers>
+                <DataTrigger TargetType="Button" Binding="{Binding HasSelectedExercises}" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
     </Grid>
 </ContentPage>

@@ -4,151 +4,100 @@
              xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
              x:Class="WorkoutTracker.Views.TimerPageView"
              x:DataType="vm:TimerViewModel"
-             Title="Таймер"
-             Shell.NavBarIsVisible="False">
-    <ContentPage.Triggers>
-        <DataTrigger TargetType="ContentPage" Binding="{Binding IsWorkPhase}" Value="True">
-            <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
-        </DataTrigger>
-        <DataTrigger TargetType="ContentPage" Binding="{Binding IsWorkPhase}" Value="False">
-            <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
-        </DataTrigger>
-    </ContentPage.Triggers>
-    
-    <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
-        <Grid.Triggers>
-            <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
-                <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
-            </DataTrigger>
-            <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
-                <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
-            </DataTrigger>
-        </Grid.Triggers>
-        
-        <Grid Grid.Row="0" 
-              ColumnDefinitions="Auto, *" 
-              Padding="15,15,15,20">
-            <Grid.Triggers>
-                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
-                    <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
-                </DataTrigger>
-                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
-                    <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
-                </DataTrigger>
-            </Grid.Triggers>
-            
-            <Button Grid.Column="0"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
+
+    <Grid RowDefinitions="Auto, *, Auto" Padding="20,10">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" HeightRequest="60">
+            <Button Grid.Column="0" 
+                    Text="✕" 
                     Command="{Binding CloseCommand}"
-                    CornerRadius="8"
-                    WidthRequest="40"
-                    HeightRequest="40"
-                    Padding="0"
-                    BorderWidth="0"
-                    Text="×"
-                    TextColor="White"
-                    FontSize="24"
-                    FontAttributes="Bold">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
-                        <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseAccent}"/>
+                    BackgroundColor="{StaticResource BackgroundInput}"
+                    TextColor="{StaticResource TextSecondary}"
+                    CornerRadius="20"
+                    WidthRequest="40" HeightRequest="40" Padding="0"/>
+
+            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label Text="ПРОГРЕСС" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
+                <Label Text="{Binding WorkoutProgress}" Style="{StaticResource LabelBody}" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" VerticalOptions="Center">
+                <Label Text="ОСТАЛОСЬ" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
+                <Label Text="{Binding RemainingTime}" TextColor="{StaticResource AccentMain}" FontAttributes="Bold" HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <Grid Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center">
+            <Ellipse WidthRequest="300" HeightRequest="300" 
+                     Stroke="{StaticResource BackgroundCard}" StrokeThickness="20"/>
+
+            <Ellipse WidthRequest="300" HeightRequest="300" 
+                     StrokeThickness="20" StrokeLineCap="Round">
+                <Ellipse.Triggers>
+                    <DataTrigger TargetType="Ellipse" Binding="{Binding IsWorkPhase}" Value="True">
+                        <Setter Property="Stroke" Value="{StaticResource AccentWork}"/>
                     </DataTrigger>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
-                        <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseAccent}"/>
+                    <DataTrigger TargetType="Ellipse" Binding="{Binding IsWorkPhase}" Value="False">
+                        <Setter Property="Stroke" Value="{StaticResource AccentRest}"/>
                     </DataTrigger>
-                </Button.Triggers>
-            </Button>
-            
-            <VerticalStackLayout Grid.Column="1"
-                                 HorizontalOptions="Center"
-                                 Spacing="{StaticResource SpacingXSmall}">
-                <Label Text="ОСТАЛОСЬ"
-                       Style="{StaticResource LabelCaption}"
-                       FontAttributes="None"
-                       HorizontalOptions="Center"/>
-                <Label Text="{Binding RemainingTime}"
-                       Style="{StaticResource LabelBody}"
-                       FontSize="20"
-                       FontAttributes="Bold"
+                </Ellipse.Triggers>
+            </Ellipse>
+
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="0">
+                <Label Text="{Binding IsWorkPhase, Converter={StaticResource BoolToTextConverter}}" 
+                       FontSize="16" TextTransform="Uppercase"
+                       HorizontalOptions="Center" Margin="0,0,0,10">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsWorkPhase}" Value="True">
+                            <Setter Property="TextColor" Value="{StaticResource AccentWork}"/>
+                            <Setter Property="Text" Value="РАБОТА"/>
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsWorkPhase}" Value="False">
+                            <Setter Property="TextColor" Value="{StaticResource AccentRest}"/>
+                            <Setter Property="Text" Value="ОТДЫХ"/>
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+
+                <Label Text="{Binding CurrentTime}" 
+                       Style="{StaticResource LabelHero}" 
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
         </Grid>
-        
-        <VerticalStackLayout Grid.Row="1"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center"
-                             Spacing="{StaticResource SpacingXLarge}">
-            
-            <Label Text="{Binding WorkoutProgress}"
-                   Style="{StaticResource LabelBody}"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"/>
-            
-            <Label Text="{Binding CurrentTime}"
-                   Style="{StaticResource LabelHero}"
-                   HorizontalOptions="Center"/>
-        </VerticalStackLayout>
-        
-        <Grid Grid.Row="2"
-              ColumnDefinitions="Auto, *, Auto"
-              Padding="15,20,15,30">
-            
-            <Grid.Triggers>
-                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
-                    <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
-                </DataTrigger>
-                <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
-                    <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
-                </DataTrigger>
-            </Grid.Triggers>
-            
-            <Button Grid.Column="0"
-                    Command="{Binding PreviousCommand}"
-                    Style="{StaticResource ButtonIconLarge}"
-                    Text="««"
-                    FontSize="20">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" 
-                                 Binding="{Binding IsWorkPhase}" 
-                                 Value="True">
-                        <Setter Property="BackgroundColor" 
-                                Value="{StaticResource WorkPhaseAccent}"/>
-                    </DataTrigger>
-                    <DataTrigger TargetType="Button" 
-                                 Binding="{Binding IsWorkPhase}" 
-                                 Value="False">
-                        <Setter Property="BackgroundColor" 
-                                Value="{StaticResource RestPhaseAccent}"/>
-                    </DataTrigger>
-                </Button.Triggers>
-            </Button>
 
-            <Button Grid.Column="1"
+        <Grid Grid.Row="2" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,30">
+
+            <Button Grid.Column="0" Command="{Binding PreviousCommand}" Text="❮"
+                    BackgroundColor="{StaticResource BackgroundInput}" TextColor="White"
+                    WidthRequest="60" HeightRequest="60" CornerRadius="30"/>
+
+            <Button Grid.Column="1" 
                     Command="{Binding PauseCommand}"
-                    Style="{StaticResource ButtonPrimary}"
-                    Margin="15,0"
                     Text="{Binding PauseButtonFullText}"
-                    FontSize="{StaticResource FontSizeMedium}"/>
-
-            <Button Grid.Column="2"
-                    Command="{Binding NextCommand}"
-                    Style="{StaticResource ButtonIconLarge}"
-                    Text="»»"
-                    FontSize="20">
+                    CornerRadius="35"
+                    HeightRequest="70"
+                    Margin="20,0"
+                    FontSize="20" FontAttributes="Bold" TextColor="White">
+                <Button.Shadow>
+                    <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.5"/>
+                </Button.Shadow>
                 <Button.Triggers>
-                    <DataTrigger TargetType="Button" 
-                                 Binding="{Binding IsWorkPhase}" 
-                                 Value="True">
-                        <Setter Property="BackgroundColor" 
-                                Value="{StaticResource WorkPhaseAccent}"/>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
+                        <Setter Property="Background" Value="{StaticResource GradientWork}"/>
+                        <Setter Property="TextColor" Value="Black"/>
                     </DataTrigger>
-                    <DataTrigger TargetType="Button" 
-                                 Binding="{Binding IsWorkPhase}" 
-                                 Value="False">
-                        <Setter Property="BackgroundColor" 
-                                Value="{StaticResource RestPhaseAccent}"/>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
+                        <Setter Property="Background" Value="{StaticResource GradientRest}"/>
+                        <Setter Property="TextColor" Value="White"/>
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
+
+            <Button Grid.Column="2" Command="{Binding NextCommand}" Text="❯"
+                    BackgroundColor="{StaticResource BackgroundInput}" TextColor="White"
+                    WidthRequest="60" HeightRequest="60" CornerRadius="30"/>
         </Grid>
     </Grid>
 </ContentPage>

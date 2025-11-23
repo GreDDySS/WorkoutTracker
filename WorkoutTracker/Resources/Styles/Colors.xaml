@@ -4,26 +4,50 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <Color x:Key="BackgroundPrimary">#0F0F0F</Color>
+    <Color x:Key="BackgroundCard">#1C1C1E</Color>
+    <Color x:Key="BackgroundInput">#2C2C2E</Color>
+
+    <Color x:Key="TextPrimary">#FFFFFF</Color>
+    <Color x:Key="TextSecondary">#A0A0A0</Color>
+    <Color x:Key="TextTertiary">#606060</Color>
+
+    <Color x:Key="AccentWork">#B2FF59</Color>
+    <Color x:Key="AccentRest">#40C4FF</Color>
+    <Color x:Key="AccentMain">#6C63FF</Color>
+    <Color x:Key="AccentError">#FF5252</Color>
+
+    <LinearGradientBrush x:Key="GradientMain" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#6C63FF" Offset="0.0" />
+        <GradientStop Color="#5447FF" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="GradientWork" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#B2FF59" Offset="0.0" />
+        <GradientStop Color="#76FF03" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="GradientRest" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#40C4FF" Offset="0.0" />
+        <GradientStop Color="#00B0FF" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <Color x:Key="TransparentColor">Transparent</Color>
+    <Color x:Key="Overlay">#CC000000</Color>
+
+
     <!-- Background Colors -->
-    <Color x:Key="BackgroundPrimary">#121212</Color>
     <Color x:Key="BackgroundSecondary">#1F1F1F</Color>
     <Color x:Key="BackgroundTertiary">#2C2C2C</Color>
-    <Color x:Key="BackgroundCard">#222222</Color>
     <Color x:Key="BackgroundElevated">#404040</Color>
 
     <!-- Text Colors -->
-    <Color x:Key="TextPrimary">#FFFFFF</Color>
-    <Color x:Key="TextSecondary">#B3B3B3</Color>
-    <Color x:Key="TextTertiary">#888888</Color>
     <Color x:Key="TextDisabled">#666666</Color>
 
     <!-- Accent Colors -->
     <Color x:Key="AccentPrimary">#00BFFF</Color>
     <Color x:Key="AccentSuccess">#4CAF50</Color>
-    <Color x:Key="AccentWork">#00FF00</Color>
-    <Color x:Key="AccentRest">#00BFFF</Color>
     <Color x:Key="AccentWarning">#FF9800</Color>
-    <Color x:Key="AccentError">#F44336</Color>
 
     <!-- Timer Phase Colors -->
     <Color x:Key="WorkPhaseBackground">#2E7D32</Color>
@@ -42,7 +66,5 @@
     <Color x:Key="ButtonDanger">#F44336</Color>
     
     <!-- Overlay -->
-    <Color x:Key="Overlay">#80000000</Color>
-    <Color x:Key="TransparentColor">Transparent</Color>
     
 </ResourceDictionary>

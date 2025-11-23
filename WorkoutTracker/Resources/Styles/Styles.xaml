@@ -32,16 +32,15 @@
 
     <!-- ==================== LABEL STYLES ==================== -->
 
-    <Style x:Key="LabelHero" TargetType="Label">
-        <Setter Property="FontSize" Value="{StaticResource FontSizeHero}"/>
+    <Style TargetType="Label" x:Key="LabelHero">
+        <Setter Property="FontSize" Value="64"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-        <Setter Property="HorizontalOptions" Value="Center"/>
-        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="FontFamily" Value="OpenSansSemibold"/>
     </Style>
 
-    <Style x:Key="LabelTitle" TargetType="Label">
-        <Setter Property="FontSize" Value="{StaticResource FontSizeTitle}"/>
+    <Style TargetType="Label" x:Key="LabelTitle">
+        <Setter Property="FontSize" Value="24"/>
         <Setter Property="FontAttributes" Value="Bold"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
         <Setter Property="HorizontalOptions" Value="Center"/>
@@ -54,13 +53,13 @@
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
     </Style>
 
-    <Style x:Key="LabelBody" TargetType="Label">
-        <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+    <Style TargetType="Label" x:Key="LabelBody">
+        <Setter Property="FontSize" Value="16"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
     </Style>
 
-    <Style x:Key="LabelCaption" TargetType="Label">
-        <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+    <Style TargetType="Label" x:Key="LabelCaption">
+        <Setter Property="FontSize" Value="13"/>
         <Setter Property="TextColor" Value="{StaticResource TextSecondary}"/>
     </Style>
 
@@ -78,14 +77,16 @@
 
     <!-- ==================== BUTTON STYLES ==================== -->
 
-    <Style x:Key="ButtonPrimary" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource ButtonPrimary}"/>
-        <Setter Property="TextColor" Value="{StaticResource BackgroundPrimary}"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    <Style TargetType="Button" x:Key="ButtonPrimary">
+        <Setter Property="Background" Value="{StaticResource GradientMain}"/>
+        <Setter Property="TextColor" Value="White"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="FontAttributes" Value="Bold"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusMedium}"/>
-        <Setter Property="HeightRequest" Value="50"/>
-        <Setter Property="BorderWidth" Value="0"/>
+        <Setter Property="CornerRadius" Value="28"/>
+        <Setter Property="HeightRequest" Value="56"/>
+        <Setter Property="Shadow">
+            <Shadow Brush="{StaticResource AccentMain}" Offset="0,4" Radius="15" Opacity="0.4"/>
+        </Setter>
     </Style>
 
     <Style x:Key="ButtonSecondary" TargetType="Button">
@@ -137,16 +138,34 @@
         <Setter Property="BorderWidth" Value="0"/>
     </Style>
 
-    <Style x:Key="ButtonCounter" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource TransparentColor}"/>
+    <Style TargetType="Button" x:Key="ButtonCounter">
+        <Setter Property="BackgroundColor" Value="Transparent"/>
+        <Setter Property="BorderColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
-        <Setter Property="FontAttributes" Value="Bold"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusMedium}"/>
+        <Setter Property="FontSize" Value="22"/>
         <Setter Property="WidthRequest" Value="40"/>
         <Setter Property="HeightRequest" Value="40"/>
-        <Setter Property="BorderWidth" Value="0"/>
-        <Setter Property="VerticalOptions" Value="Center"/>
+    </Style>
+
+    <!-- ==================== CARD STYLES ===================== -->
+
+    <Style TargetType="Border" x:Key="CardStyle">
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundCard}"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 20"/>
+        <Setter Property="StrokeThickness" Value="0"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Margin" Value="0,8"/>
+        <Setter Property="Shadow">
+            <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.3"/>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Border" x:Key="CounterContainer">
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundInput}"/>
+        <Setter Property="StrokeShape" Value="RoundRectangle 24"/>
+        <Setter Property="StrokeThickness" Value="0"/>
+        <Setter Property="HeightRequest" Value="48"/>
+        <Setter Property="Padding" Value="4"/>
     </Style>
 
     <!-- ==================== FRAME STYLES ==================== -->
