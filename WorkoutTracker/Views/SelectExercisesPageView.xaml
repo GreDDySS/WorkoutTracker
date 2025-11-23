@@ -6,29 +6,24 @@
              x:Class="WorkoutTracker.Views.SelectExercisesPageView"
              x:DataType="vm:SelectExercisesViewModel"
              Title="Выбрать упражнения"
-             BackgroundColor="#121212"
              Shell.NavBarIsVisible="False">
+
     <ContentPage.Resources>
         <DataTemplate x:Key="ExerciseSelectTemplate" x:DataType="models:SelectableExercise">
-            <Frame BackgroundColor="#2C2C2C"
-               CornerRadius="10"
-               Padding="15"
-               Margin="0,5,0,5"
-               HasShadow="False">
+            <Frame Style="{StaticResource FrameCard}"
+                   Margin="0,5,0,5">
                 <Grid ColumnDefinitions="Auto, *">
                     <CheckBox Grid.Column="0"
-                          IsChecked="{Binding IsSelected}"
-                          Color="White"
-                          VerticalOptions="Center"
-                          Margin="0,0,15,0"/>
-                    <VerticalStackLayout Grid.Column="1" Spacing="3">
+                              IsChecked="{Binding IsSelected}"
+                              VerticalOptions="Center"
+                              Margin="0,0,15,0"/>
+                    <VerticalStackLayout Grid.Column="1" 
+                                         Spacing="3">
                         <Label Text="{Binding Name}"
-                           TextColor="White"
-                           FontSize="16"
-                           FontAttributes="Bold"/>
+                               Style="{StaticResource LabelBody}"
+                               FontAttributes="Bold"/>
                         <Label Text="{Binding Details}"
-                           TextColor="LightGray"
-                           FontSize="12"/>
+                               Style="{StaticResource LabelSubtle}"/>
                     </VerticalStackLayout>
                 </Grid>
             </Frame>
@@ -37,53 +32,36 @@
 
     <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
 
-        <!-- Header -->
         <Grid Grid.Row="0" 
               ColumnDefinitions="Auto, *, Auto" 
               Padding="15,15,15,20"
-              BackgroundColor="#2C2C2C">
+              BackgroundColor="{StaticResource BackgroundTertiary}">
 
-            <!-- Close Button -->
             <Button Grid.Column="0"
                     Command="{Binding CloseCommand}"
-                    BackgroundColor="#404040"
-                    CornerRadius="8"
-                    WidthRequest="40"
-                    HeightRequest="40"
-                    Padding="0"
-                    BorderWidth="0"
-                    Text="×"
-                    TextColor="White"
-                    FontSize="24"
-                    FontAttributes="Bold"/>
+                    Style="{StaticResource ButtonClose}"/>
 
-            <!-- Center: Title -->
             <VerticalStackLayout Grid.Column="1"
                                  HorizontalOptions="Center"
-                                 Spacing="5">
+                                 Spacing="{StaticResource SpacingXSmall}">
                 <Label Text="ВЫБРАТЬ УПРАЖНЕНИЯ"
-                       TextColor="White"
-                       FontSize="16"
+                       Style="{StaticResource LabelBody}"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
 
-            <!-- Empty space for symmetry -->
             <BoxView Grid.Column="2"
                      WidthRequest="40"
                      HeightRequest="40"
-                     Color="Transparent"/>
+                     Color="{StaticResource TransparentColor}"/>
         </Grid>
 
-        <!-- Main Content: Exercises List -->
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20" Spacing="15">
+            <VerticalStackLayout Padding="{StaticResource SpacingLarge}" Spacing="{StaticResource SpacingMedium}">
 
-                <!-- Custom Exercises Section -->
                 <VerticalStackLayout Spacing="10">
                     <Label Text="СВОИ"
-                           TextColor="White"
-                           FontSize="18"
+                           Style="{StaticResource LabelBody}"
                            FontAttributes="Bold"
                            Margin="0,0,0,5"/>
 
@@ -94,20 +72,18 @@
                     <VerticalStackLayout IsVisible="{Binding HasNoCustomExercises}"
                                          VerticalOptions="Center"
                                          HorizontalOptions="Center"
-                                         Spacing="5"
+                                         Spacing="{StaticResource SpacingXSmall}"
                                          Margin="0,10">
+                        
                         <Label Text="Нет своих упражнений"
-                               TextColor="Gray"
-                               FontSize="14"
+                               Style="{StaticResource LabelCaption}"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
 
-                <!-- System Exercises Section -->
-                <VerticalStackLayout Spacing="10">
+                <VerticalStackLayout Spacing="{StaticResource SpacingSmall}">
                     <Label Text="СИСТЕМНЫЕ"
-                           TextColor="White"
-                           FontSize="18"
+                           Style="{StaticResource LabelBody}"
                            FontAttributes="Bold"
                            Margin="0,10,0,5"/>
 
@@ -118,30 +94,21 @@
                     <VerticalStackLayout IsVisible="{Binding HasNoSystemExercises}"
                                          VerticalOptions="Center"
                                          HorizontalOptions="Center"
-                                         Spacing="5"
+                                         Spacing="{StaticResource SpacingXSmall}"
                                          Margin="0,10">
                         <Label Text="Нет системных упражнений"
-                               TextColor="Gray"
-                               FontSize="14"
+                               Style="{StaticResource LabelCaption}"
                                HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Footer: Add Button -->
         <Grid Grid.Row="2"
-              Padding="15,20,15,30"
-              BackgroundColor="#2C2C2C">
+              Padding="15,20,15,30">
             <Button Command="{Binding AddSelectedCommand}"
-                    BackgroundColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    BorderWidth="0"
                     Text="{Binding AddButtonText}"
-                    TextColor="Black"
-                    FontSize="18"
-                    FontAttributes="Bold"
+                    Style="{StaticResource ButtonPrimary}"
                     IsEnabled="{Binding HasSelectedExercises}"/>
         </Grid>
     </Grid>

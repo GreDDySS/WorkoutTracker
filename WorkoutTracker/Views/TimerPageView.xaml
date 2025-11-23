@@ -8,37 +8,35 @@
              Shell.NavBarIsVisible="False">
     <ContentPage.Triggers>
         <DataTrigger TargetType="ContentPage" Binding="{Binding IsWorkPhase}" Value="True">
-            <Setter Property="BackgroundColor" Value="#2E7D32"/>
+            <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
         </DataTrigger>
         <DataTrigger TargetType="ContentPage" Binding="{Binding IsWorkPhase}" Value="False">
-            <Setter Property="BackgroundColor" Value="#1976D2"/>
+            <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
         </DataTrigger>
     </ContentPage.Triggers>
     
     <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
         <Grid.Triggers>
             <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
-                <Setter Property="BackgroundColor" Value="#2E7D32"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
             </DataTrigger>
             <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
-                <Setter Property="BackgroundColor" Value="#1976D2"/>
+                <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
             </DataTrigger>
         </Grid.Triggers>
         
-        <!-- Header -->
         <Grid Grid.Row="0" 
               ColumnDefinitions="Auto, *" 
               Padding="15,15,15,20">
             <Grid.Triggers>
                 <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
-                    <Setter Property="BackgroundColor" Value="#2E7D32"/>
+                    <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
                 </DataTrigger>
                 <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
-                    <Setter Property="BackgroundColor" Value="#1976D2"/>
+                    <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
                 </DataTrigger>
             </Grid.Triggers>
             
-            <!-- Close Button -->
             <Button Grid.Column="0"
                     Command="{Binding CloseCommand}"
                     CornerRadius="8"
@@ -52,117 +50,102 @@
                     FontAttributes="Bold">
                 <Button.Triggers>
                     <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
-                        <Setter Property="BackgroundColor" Value="#4CAF50"/>
+                        <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseAccent}"/>
                     </DataTrigger>
                     <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
-                        <Setter Property="BackgroundColor" Value="#2196F3"/>
+                        <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseAccent}"/>
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
             
-            <!-- Center: Remaining Time -->
             <VerticalStackLayout Grid.Column="1"
                                  HorizontalOptions="Center"
-                                 Spacing="5">
+                                 Spacing="{StaticResource SpacingXSmall}">
                 <Label Text="ОСТАЛОСЬ"
-                       TextColor="White"
-                       FontSize="14"
+                       Style="{StaticResource LabelCaption}"
                        FontAttributes="None"
                        HorizontalOptions="Center"/>
                 <Label Text="{Binding RemainingTime}"
-                       TextColor="White"
+                       Style="{StaticResource LabelBody}"
                        FontSize="20"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
         </Grid>
         
-        <!-- Main Content -->
         <VerticalStackLayout Grid.Row="1"
                              HorizontalOptions="Center"
                              VerticalOptions="Center"
-                             Spacing="30">
+                             Spacing="{StaticResource SpacingXLarge}">
             
-            <!-- Workout Progress -->
             <Label Text="{Binding WorkoutProgress}"
-                   TextColor="White"
-                   FontSize="18"
+                   Style="{StaticResource LabelBody}"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"/>
             
-            <!-- Main Timer -->
             <Label Text="{Binding CurrentTime}"
-                   TextColor="White"
-                   FontSize="72"
-                   FontAttributes="Bold"
+                   Style="{StaticResource LabelHero}"
                    HorizontalOptions="Center"/>
         </VerticalStackLayout>
         
-        <!-- Footer Controls -->
         <Grid Grid.Row="2"
               ColumnDefinitions="Auto, *, Auto"
               Padding="15,20,15,30">
+            
             <Grid.Triggers>
                 <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="True">
-                    <Setter Property="BackgroundColor" Value="#2E7D32"/>
+                    <Setter Property="BackgroundColor" Value="{StaticResource WorkPhaseBackground}"/>
                 </DataTrigger>
                 <DataTrigger TargetType="Grid" Binding="{Binding IsWorkPhase}" Value="False">
-                    <Setter Property="BackgroundColor" Value="#1976D2"/>
+                    <Setter Property="BackgroundColor" Value="{StaticResource RestPhaseBackground}"/>
                 </DataTrigger>
             </Grid.Triggers>
             
-            <!-- Previous Button -->
             <Button Grid.Column="0"
                     Command="{Binding PreviousCommand}"
-                    CornerRadius="8"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    Padding="0"
-                    BorderWidth="0"
+                    Style="{StaticResource ButtonIconLarge}"
                     Text="««"
-                    TextColor="White"
-                    FontSize="20"
-                    FontAttributes="Bold">
+                    FontSize="20">
                 <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
-                        <Setter Property="BackgroundColor" Value="#4CAF50"/>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsWorkPhase}" 
+                                 Value="True">
+                        <Setter Property="BackgroundColor" 
+                                Value="{StaticResource WorkPhaseAccent}"/>
                     </DataTrigger>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
-                        <Setter Property="BackgroundColor" Value="#2196F3"/>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsWorkPhase}" 
+                                 Value="False">
+                        <Setter Property="BackgroundColor" 
+                                Value="{StaticResource RestPhaseAccent}"/>
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
-            
-            <!-- Pause Button -->
+
             <Button Grid.Column="1"
                     Command="{Binding PauseCommand}"
-                    BackgroundColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
+                    Style="{StaticResource ButtonPrimary}"
                     Margin="15,0"
-                    BorderWidth="0"
                     Text="{Binding PauseButtonFullText}"
-                    TextColor="Black"
-                    FontSize="16"/>
-            
-            <!-- Next Button -->
+                    FontSize="{StaticResource FontSizeMedium}"/>
+
             <Button Grid.Column="2"
                     Command="{Binding NextCommand}"
-                    CornerRadius="8"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    Padding="0"
-                    BorderWidth="0"
+                    Style="{StaticResource ButtonIconLarge}"
                     Text="»»"
-                    TextColor="White"
-                    FontSize="20"
-                    FontAttributes="Bold">
+                    FontSize="20">
                 <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="True">
-                        <Setter Property="BackgroundColor" Value="#4CAF50"/>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsWorkPhase}" 
+                                 Value="True">
+                        <Setter Property="BackgroundColor" 
+                                Value="{StaticResource WorkPhaseAccent}"/>
                     </DataTrigger>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsWorkPhase}" Value="False">
-                        <Setter Property="BackgroundColor" Value="#2196F3"/>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsWorkPhase}" 
+                                 Value="False">
+                        <Setter Property="BackgroundColor" 
+                                Value="{StaticResource RestPhaseAccent}"/>
                     </DataTrigger>
                 </Button.Triggers>
             </Button>

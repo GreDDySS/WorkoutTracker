@@ -5,70 +5,58 @@
              xmlns:models="clr-namespace:WorkoutTracker.Models"
              x:Class="WorkoutTracker.Views.AddProgramPageView"
              x:DataType="vm:AddProgramViewModel"
-             Title="Добавить программу"
-             BackgroundColor="#121212">
+             Title="Добавить программу">
+    
     <ContentPage.Resources>
         <DataTemplate x:Key="ProgramExerciseTemplate" x:DataType="models:ProgramExerciseItem">
-            <Frame BackgroundColor="#404040"
-               CornerRadius="8"
-               Padding="15"
-               Margin="0,5,0,5"
-               HasShadow="False">
-                <Grid ColumnDefinitions="*, Auto, Auto, Auto">
+            <Frame BackgroundColor="{StaticResource BackgroundElevated}"
+                   CornerRadius="{StaticResource RadiusSmall}"
+                   Padding="{StaticResource SpacingMedium}"
+                   Margin="0,5,0,5"
+                   HasShadow="False">
+                
+                <Grid ColumnDefinitions="*, Auto, Auto">
                     <VerticalStackLayout Grid.Column="0" Spacing="3">
                         <Label Text="{Binding ExerciseName}"
-                           TextColor="White"
-                           FontSize="16"
+                           Style="{StaticResource LabelBody}"
                            FontAttributes="Bold"/>
                         <Label Text="{Binding ApproachesText}"
-                           TextColor="LightGray"
-                           FontSize="14"/>
+                           Style="{StaticResource LabelCaption}"/>
                     </VerticalStackLayout>
 
-                    <!-- Кнопки управления подходами -->
-                    <Grid Grid.Column="1" ColumnDefinitions="Auto, *, Auto" Margin="10,0">
+                    <Grid Grid.Column="1" 
+                          ColumnDefinitions="Auto, *, Auto" 
+                          Margin="10,0">
                         <Button Grid.Column="0"
-                            Text="—"
-                            BackgroundColor="#2C2C2C"
-                            TextColor="White"
-                            CornerRadius="5"
-                            WidthRequest="30"
-                            HeightRequest="30"
-                            Padding="0"
-                            FontSize="16"
-                            FontAttributes="Bold"
-                            Command="{Binding DecreaseApproachesCommand}"/>
+                                Text="—"
+                                Style="{StaticResource ButtonCounter}"
+                                BackgroundColor="{StaticResource BackgroundTertiary}"
+                                Command="{Binding DecreaseApproachesCommand}"/>
                         <Label Grid.Column="1"
-                           Text="{Binding Approaches}"
-                           TextColor="White"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           Margin="5,0"/>
+                               Text="{Binding Approaches}"
+                               Style="{StaticResource LabelHeading}"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Margin="5,0"/>
                         <Button Grid.Column="2"
-                            Text="+"
-                            BackgroundColor="#2C2C2C"
-                            TextColor="White"
-                            CornerRadius="5"
-                            WidthRequest="30"
-                            HeightRequest="30"
-                            Padding="0"
-                            FontSize="16"
-                            FontAttributes="Bold"
-                            Command="{Binding IncreaseApproachesCommand}"/>
+                                Text="+"
+                                Style="{StaticResource ButtonCounter}"
+                                BackgroundColor="{StaticResource BackgroundTertiary}"
+                                Command="{Binding IncreaseApproachesCommand}"/>
                     </Grid>
 
                     <Button Grid.Column="2"
-                        Text="×"
-                        BackgroundColor="Transparent"
-                        TextColor="Red"
-                        FontSize="20"
-                        WidthRequest="30"
-                        HeightRequest="30"
-                        Padding="0"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AddProgramViewModel}}, Path=RemoveExerciseCommand}"
-                        CommandParameter="{Binding .}"/>
+                            Text="×"
+                            BackgroundColor="{StaticResource TransparentColor}"
+                            TextColor="{StaticResource AccentError}"
+                            FontSize="20"
+                            WidthRequest="30"
+                            HeightRequest="30"
+                            Padding="0"
+                            BorderWidth="0"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AddProgramViewModel}}, Path=RemoveExerciseCommand}"
+                            CommandParameter="{Binding .}"/>
                 </Grid>
             </Frame>
         </DataTemplate>
@@ -79,78 +67,53 @@
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *, Auto"
               Padding="15,10"
-              BackgroundColor="#2C2C2C">
-            
+              BackgroundColor="{StaticResource BackgroundTertiary}">
+
             <Button Grid.Column="0"
                     Command="{Binding CloseCommand}"
-                    BackgroundColor="#404040"
-                    CornerRadius="8"
-                    WidthRequest="40"
-                    HeightRequest="40"
-                    Padding="0"
-                    BorderWidth="0"
-                    Text="×"
-                    TextColor="White"
-                    FontSize="24"
-                    FontAttributes="Bold"/>
+                    Style="{StaticResource ButtonClose}"/>
 
             <VerticalStackLayout Grid.Column="1"
                                  HorizontalOptions="Center"
-                                 Spacing="5">
+                                 Spacing="{StaticResource SpacingXSmall}">
                 <Label Text="{Binding Title}"
-                       TextColor="White"
-                       FontSize="16"
+                       Style="{StaticResource LabelBody}"
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>
             </VerticalStackLayout>
 
-            <BoxView Grid.ColumnSpan="2"
+            <BoxView Grid.Column="2"
                      HeightRequest="40"
                      WidthRequest="40"
-                     Color="Transparent"/>
+                     Color="{StaticResource TransparentColor}"/>
         </Grid>
 
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20"
-                                 Spacing="20"
+            <VerticalStackLayout Padding="{StaticResource SpacingLarge}"
+                                 Spacing="{StaticResource SpacingLarge}"
                                  VerticalOptions="Start">
-                <Frame BackgroundColor="#2C2C2C"
-                       CornerRadius="10"
-                       Padding="15"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="5">
+
+                <Frame Style="{StaticResource FrameCard}">
+                    <VerticalStackLayout Spacing="{StaticResource SpacingXSmall}">
                         <Label Text="Название программы"
-                               TextColor="White"
-                               FontSize="14"
-                               Opacity="0.8"
+                               Style="{StaticResource LabelCaption}"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"/>
                         <Entry Text="{Binding ProgramName}"
                                Placeholder="Введите название"
-                               PlaceholderColor="Gray"
-                               TextColor="White"
-                               FontSize="18"
-                               BackgroundColor="Transparent"/>
+                               Style="{StaticResource EntryDefault}"/>
                     </VerticalStackLayout>
                 </Frame>
 
-                <Frame BackgroundColor="#2C2C2C"
-                       CornerRadius="10"
-                       Padding="15"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="10">
+                <Frame Style="{StaticResource FrameCard}">
+                    <VerticalStackLayout Spacing="{StaticResource SpacingSmall}">
                         <Label Text="Упражнения в программе"
-                               TextColor="White"
-                               FontSize="14"
-                               Opacity="0.8"/>
+                               Style="{StaticResource LabelCaption}"/>
 
                         <Button Text="+ Добавить упражнение"
-                                BackgroundColor="#404040"
-                                TextColor="White"
-                                CornerRadius="8"
+                                Style="{StaticResource ButtonSecondary}"
                                 HeightRequest="40"
-                                Command="{Binding AddExerciseCommand}"
-                                FontAttributes="Bold"/>
+                                Command="{Binding AddExerciseCommand}"/>
 
                         <CollectionView ItemsSource="{Binding ProgramExercises}"
                                         ItemTemplate="{StaticResource ProgramExerciseTemplate}"
@@ -160,15 +123,13 @@
                         <VerticalStackLayout IsVisible="{Binding HasNoExercises}"
                                              VerticalOptions="Center"
                                              HorizontalOptions="Center"
-                                             Spacing="5"
+                                             Spacing="{StaticResource SpacingXSmall}"
                                              Margin="0,10">
                             <Label Text="Нет упражнений"
-                                   TextColor="Gray"
-                                   FontSize="14"
+                                   Style="{StaticResource LabelCaption}"
                                    HorizontalOptions="Center"/>
                             <Label Text="Добавьте упражнения в программу"
-                                   TextColor="Gray"
-                                   FontSize="12"
+                                   Style="{StaticResource LabelSubtle}"
                                    HorizontalOptions="Center"/>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
@@ -178,16 +139,10 @@
 
         <Grid Grid.Row="2"
               Padding="15,20,15,30"
-              BackgroundColor="#2C2C2C">
+              BackgroundColor="{StaticResource BackgroundTertiary}">
             <Button Command="{Binding SaveCommand}"
-                    BackgroundColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    BorderWidth="0"
                     Text="Сохранить"
-                    TextColor="Black"
-                    FontSize="18"
-                    FontAttributes="Bold"/>
+                    Style="{StaticResource ButtonPrimary}"/>
         </Grid>
     </Grid>
 

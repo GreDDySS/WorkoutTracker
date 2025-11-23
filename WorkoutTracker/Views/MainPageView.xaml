@@ -5,74 +5,107 @@
              x:Class="WorkoutTracker.Views.MainPageView"
              x:DataType="vm:MainViewModel"
              xmlns:local="clr-namespace:WorkoutTracker">
-    <ContentPage.Resources>
-        <Style x:Key="TimeButton" TargetType="Button">
-            <Setter Property="FontSize" Value="24" />
-            <Setter Property="CornerRadius" Value="10" />
-            <Setter Property="HeightRequest" Value="40" />
-            <Setter Property="WidthRequest" Value="40" />
-            <Setter Property="BackgroundColor" Value="Transparent" />
-            <Setter Property="TextColor" Value="White" />
-            <Setter Property="BorderColor" Value="Transparent" />
-            <Setter Property="BorderWidth" Value="0" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="VerticalOptions" Value="Center" />
-        </Style>
 
-        <Style x:Key="TimeLabel" TargetType="Label">
-            <Setter Property="FontSize" Value="56" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="VerticalOptions" Value="Center" />
-            <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
-        </Style>
-    </ContentPage.Resources>
+    <Grid Padding="{StaticResource SpacingMedium}" 
+          RowDefinitions="*, Auto">
 
-    <VerticalStackLayout Padding="15,0" BackgroundColor="#121212">
-        <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *" RowSpacing="20">
-            <Grid BackgroundColor="#222222" ColumnDefinitions="*, Auto" HeightRequest="50" Margin="-15, 0, -15, 0">
-                <Label Grid.Column="0" Text="Workout Traker" TextColor="White" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Padding="20,0,0,0"/>
+        <Grid Grid.Row="0" 
+              RowDefinitions="Auto, Auto, Auto, Auto, Auto, *" 
+              RowSpacing="{StaticResource SpacingLarge}">
+            
+            <Grid BackgroundColor="{StaticResource BackgroundCard}"
+                  ColumnDefinitions="*, Auto"
+                  HeightRequest="50"
+                  Margin="-15, -15, -15, 0">
+                <Label Grid.Column="0" 
+                       Text="Workout Traker" 
+                       Style="{StaticResource LabelBody}"
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" 
+                       Padding="20,0,0,0"/>
             </Grid>
 
-            <Frame Grid.Row="1" Padding="0,10,0,0" BackgroundColor="#222222" CornerRadius="10">
+            <Frame Grid.Row="1" Padding="0,10,0,0" Style="{StaticResource FrameCard}">
                 <VerticalStackLayout>
-                    <Label Text="ПОДХОДЫ" TextColor="LightGray" FontSize="14" HorizontalOptions="Center"/>
-                    <Grid ColumnDefinitions="Auto, *, Auto" Margin="50,0">
-                        <Button Grid.Column="0" Text="—" Style="{StaticResource TimeButton}" Command="{Binding ChangeApproachesCommand}" CommandParameter="-"/>
-                        <Label Grid.Column="1" Text="{Binding Approaches}" TextColor="White" Style="{StaticResource TimeLabel}" FontSize="48" />
-                        <Button Grid.Column="2" Text="+" Style="{StaticResource TimeButton}" Command="{Binding ChangeApproachesCommand}" CommandParameter="+"/>
+                    <Label Text="ПОДХОДЫ" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
+                    <Grid ColumnDefinitions="Auto, *, Auto" 
+                          Margin="50,0">
+                        <Button Grid.Column="0" 
+                                Text="—" 
+                                Style="{StaticResource ButtonCounter}"
+                                Command="{Binding ChangeApproachesCommand}" 
+                                CommandParameter="-"/>
+                        <Label Grid.Column="1" 
+                               Text="{Binding Approaches}" 
+                               Style="{StaticResource LabelTitle}"/>
+                        <Button Grid.Column="2" 
+                                Text="+" 
+                                Style="{StaticResource ButtonCounter}"
+                                Command="{Binding ChangeApproachesCommand}" 
+                                CommandParameter="+"/>
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
 
-            <Frame Grid.Row="2" Background="#222222" CornerRadius="10">
+            <Frame Grid.Row="2" Style="{StaticResource FrameCard}">
                 <VerticalStackLayout>
                     <VerticalStackLayout Margin="30,0">
-                        <Label Text="РАБОТА" TextColor="#00FF00" FontSize="14" HorizontalOptions="Center" />
+                        <Label Text="РАБОТА" 
+                               TextColor="{StaticResource AccentWork}" 
+                               FontSize="{StaticResource FontSizeSmall}"
+                               HorizontalOptions="Center" />
                         <Grid ColumnDefinitions="Auto, *, Auto">
-                            <Button Grid.Column="0" Text="—" Style="{StaticResource TimeButton}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="-"/>
-                            <Label Grid.Column="1" Text="{Binding WorkTimeDisplay}" TextColor="#00FF00" Style="{StaticResource TimeLabel}" />
-                            <Button Grid.Column="2" Text="+" Style="{StaticResource TimeButton}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="+"/>
+                            <Button Grid.Column="0" 
+                                    Text="—" 
+                                    Style="{StaticResource ButtonCounter}"
+                                    Command="{Binding ChangeWorkTimeCommand}" 
+                                    CommandParameter="-"/>
+                            <Label Grid.Column="1" 
+                                   Text="{Binding WorkTimeDisplay}" 
+                                   TextColor="{StaticResource AccentWork}" 
+                                   Style="{StaticResource LabelTitle}"/>
+                            <Button Grid.Column="2" 
+                                    Text="+" 
+                                    Style="{StaticResource ButtonCounter}"
+                                    Command="{Binding ChangeWorkTimeCommand}" 
+                                    CommandParameter="+"/>
                         </Grid>
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="#666666" Margin="-10, 10" />
+                    <BoxView Style="{StaticResource DividerHorizontal}" Margin="-10, 10" />
 
                     <VerticalStackLayout Margin="30,0">
-                        <Label Text="ОТДЫХ" TextColor="#00BFFF" FontSize="14" HorizontalOptions="Center" />
+                        <Label Text="ОТДЫХ" 
+                               TextColor="{StaticResource AccentRest}" 
+                               FontSize="{StaticResource FontSizeSmall}"
+                               HorizontalOptions="Center" />
                         <Grid ColumnDefinitions="Auto, *, Auto">
-                            <Button Grid.Column="0" Text="—" Style="{StaticResource TimeButton}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="-"/>
-                            <Label Grid.Column="1" Text="{Binding RestTimeDisplay}" TextColor="#00BFFF" Style="{StaticResource TimeLabel}" />
-                            <Button Grid.Column="2" Text="+" Style="{StaticResource TimeButton}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="+"/>
+                            <Button Grid.Column="0" 
+                                    Text="—" 
+                                    Style="{StaticResource ButtonCounter}"
+                                    Command="{Binding ChangeRestTimeCommand}" 
+                                    CommandParameter="-"/>
+                            <Label Grid.Column="1" 
+                                   Text="{Binding RestTimeDisplay}" 
+                                   TextColor="{StaticResource AccentRest}" 
+                                   Style="{StaticResource LabelTitle}"/>
+                            <Button Grid.Column="2" 
+                                    Text="+" 
+                                    Style="{StaticResource ButtonCounter}"
+                                    Command="{Binding ChangeRestTimeCommand}" 
+                                    CommandParameter="+"/>
                         </Grid>
                     </VerticalStackLayout>
 
                 </VerticalStackLayout>
             </Frame>
-            <Label Grid.Row="3" Text="Создать свою тренировку" TextColor="LightGray" FontAttributes="Bold" FontSize="16" HorizontalOptions="Center"/>
-            <Button Grid.Row="4" Text="+ Несколько упражнений" FontSize="24" TextColor="White" BackgroundColor="#222222"  HeightRequest="60"/>
 
-            <Button Grid.Row="5" VerticalOptions="End" Text="Начать" FontAttributes="Bold" FontSize="32" Margin="0,10" TextColor="Black" BackgroundColor="White" Command="{Binding StartWorkoutCommand}"/>
         </Grid>
-    </VerticalStackLayout>
+        
+        <Grid Grid.Row="1">
+            <Button Grid.Row="1" Text="Начать" Style="{StaticResource ButtonPrimary}" FontSize="32" Margin="0,10" Command="{Binding StartWorkoutCommand}"/>
+        </Grid>
+    </Grid>
 
 </ContentPage>

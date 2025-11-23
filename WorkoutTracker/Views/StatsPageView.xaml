@@ -11,114 +11,124 @@
 
     <ContentPage.Resources>
         <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
-        
+
         <DataTemplate x:Key="WorkoutItemTemplate" x:DataType="models:WorkoutHistory">
-            <Frame BackgroundColor="#2C2C2C"
-                   CornerRadius="10"
-                   Padding="15"
-                   Margin="0,5,0,5"
-                   HasShadow="False">
-                <VerticalStackLayout Spacing="5">
+            <Frame Style="{StaticResource FrameCard}"
+                   Margin="0,5,0,5">
+                <VerticalStackLayout Spacing="{StaticResource SpacingXSmall}">
+                    
                     <Label Text="{Binding WorkoutName}" 
-                           TextColor="White" 
-                           FontSize="16" 
+                           Style="{StaticResource LabelBody}" 
                            FontAttributes="Bold"/>
                     <Label Text="{Binding WorkoutDetails}" 
-                           TextColor="LightGray" 
-                           FontSize="12"/>
+                           Style="{StaticResource LabelSubtle}"/>
                     <Label Text="{Binding WorkoutDate, StringFormat='{0:HH:mm}'}" 
-                           TextColor="#00BFFF" 
-                           FontSize="12"/>
+                           TextColor="{StaticResource AccentPrimary}"  
+                           FontSize="{StaticResource FontSizeCaption}"/>
+                    
                 </VerticalStackLayout>
             </Frame>
         </DataTemplate>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *, Auto">
-        <!-- Header with month navigation -->
+    <Grid RowDefinitions="Auto, Auto, *, Auto">
         <Grid Grid.Row="0" 
-              BackgroundColor="#222222" 
+              BackgroundColor="{StaticResource BackgroundCard}" 
               Padding="15,10"
-              ColumnDefinitions="Auto, *, Auto">
+              ColumnDefinitions="50, *, 50">
+
             <Button Grid.Column="0"
                     Text="◀"
                     FontSize="20"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
+                    BackgroundColor="{StaticResource TransparentColor}"
+                    BorderColor="{StaticResource TransparentColor}"
+                    TextColor="{StaticResource TextPrimary}"
                     Command="{Binding PreviousMonthCommand}"
-                    WidthRequest="40"
-                    HeightRequest="40"/>
-            
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"/>
+
             <Label Grid.Column="1"
                    Text="{Binding CurrentMonthName}"
-                   TextColor="White"
-                   FontSize="18"
+                   Style="{StaticResource LabelBody}"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"/>
-            
+
             <Button Grid.Column="2"
                     Text="▶"
                     FontSize="20"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
+                    BackgroundColor="{StaticResource TransparentColor}"
+                    BorderColor="{StaticResource TransparentColor}"
+                    TextColor="{StaticResource TextPrimary}"
                     Command="{Binding NextMonthCommand}"
-                    WidthRequest="40"
-                    HeightRequest="40"/>
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"/>
         </Grid>
 
-        <!-- Calendar -->
-        <ScrollView Grid.Row="1" Padding="15">
-            <VerticalStackLayout Spacing="10">
-                <!-- Days of week header -->
-                <Grid ColumnDefinitions="*,*,*,*,*,*,*" ColumnSpacing="5">
-                    <Label Grid.Column="0" Text="ПН" TextColor="LightGray" FontSize="12" HorizontalOptions="Center"/>
-                    <Label Grid.Column="1" Text="ВТ" TextColor="LightGray" FontSize="12" HorizontalOptions="Center"/>
-                    <Label Grid.Column="2" Text="СР" TextColor="LightGray" FontSize="12" HorizontalOptions="Center"/>
-                    <Label Grid.Column="3" Text="ЧТ" TextColor="LightGray" FontSize="12" HorizontalOptions="Center"/>
-                    <Label Grid.Column="4" Text="ПТ" TextColor="LightGray" FontSize="12" HorizontalOptions="Center"/>
-                    <Label Grid.Column="5" Text="СБ" TextColor="LightGray" FontSize="12" HorizontalOptions="Center"/>
-                    <Label Grid.Column="6" Text="ВС" TextColor="LightGray" FontSize="12" HorizontalOptions="Center"/>
+        <ScrollView Grid.Row="2" Padding="10">
+            <VerticalStackLayout Spacing="{StaticResource SpacingSmall}" HorizontalOptions="Center">
+                <Grid ColumnDefinitions="50,50,50,50,50,50,50" 
+                      ColumnSpacing="3"
+                      HeightRequest="30"
+                      Margin="0,0,0,5">
+                    <Label Grid.Column="0" Text="ПН" TextColor="{StaticResource TextTertiary}" FontSize="{StaticResource FontSizeCaption}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="ВТ" TextColor="{StaticResource TextTertiary}" FontSize="{StaticResource FontSizeCaption}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="2" Text="СР" TextColor="{StaticResource TextTertiary}" FontSize="{StaticResource FontSizeCaption}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="3" Text="ЧТ" TextColor="{StaticResource TextTertiary}" FontSize="{StaticResource FontSizeCaption}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="4" Text="ПТ" TextColor="{StaticResource TextTertiary}" FontSize="{StaticResource FontSizeCaption}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="5" Text="СБ" TextColor="{StaticResource TextTertiary}" FontSize="{StaticResource FontSizeCaption}" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Label Grid.Column="6" Text="ВС" TextColor="{StaticResource TextTertiary}" FontSize="{StaticResource FontSizeCaption}" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </Grid>
 
-                <!-- Calendar grid -->
                 <Grid x:Name="CalendarGrid" 
-                      ColumnDefinitions="*,*,*,*,*,*,*" 
-                      RowDefinitions="*,*,*,*,*,*"
-                      ColumnSpacing="5"
-                      RowSpacing="5">
-                    <!-- Calendar cells will be generated in code-behind -->
+                      ColumnDefinitions="50,50,50,50,50,50,50" 
+                      RowDefinitions="50,50,50,50,50,50"
+                      ColumnSpacing="3"
+                      RowSpacing="3"
+                      BackgroundColor="{StaticResource BackgroundSecondary}">
                 </Grid>
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Workouts list for selected date -->
-        <Grid Grid.Row="2" 
+        <Grid Grid.Row="3" 
               RowDefinitions="Auto, *"
-              BackgroundColor="#222222"
+              BackgroundColor="{StaticResource BackgroundSecondary}"
               IsVisible="{Binding SelectedDate, Converter={StaticResource IsNotNullConverter}}"
-              MaximumHeightRequest="250">
-            <Label Grid.Row="0"
-                   Text="{Binding SelectedDate, StringFormat='Тренировки за {0:dd MMMM yyyy}'}"
-                   TextColor="White"
-                   FontSize="16"
-                   FontAttributes="Bold"
-                   Padding="15,10"
-                   HorizontalOptions="Center"/>
-            
+              MaximumHeightRequest="280">
+
+            <Frame Grid.Row="0"
+                   Style="{StaticResource FrameHeader}"
+                   Margin="15,10,15,5"
+                   HasShadow="False">
+                <Label Text="{Binding SelectedDate, StringFormat='Тренировки за {0:dd MMMM yyyy}'}"
+                       Style="{StaticResource LabelCaption}"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </Frame>
+
             <CollectionView Grid.Row="1"
                            ItemsSource="{Binding WorkoutsForSelectedDate}"
                            ItemTemplate="{StaticResource WorkoutItemTemplate}"
                            SelectionMode="None"
-                           MaximumHeightRequest="200"
-                           BackgroundColor="Transparent">
+                           Margin="15,0,15,10"
+                           BackgroundColor="{StaticResource TransparentColor}">
+                
                 <CollectionView.EmptyView>
-                    <Label Text="Нет тренировок в этот день"
-                           TextColor="LightGray"
-                           FontSize="14"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"
-                           Margin="0,20"/>
+                    <VerticalStackLayout HorizontalOptions="Center" 
+                                       VerticalOptions="Center"
+                                       Spacing="{StaticResource SpacingSmall}"
+                                       Padding="{StaticResource SpacingLarge}">
+                        <Label Text="📅"
+                               FontSize="40"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Нет тренировок в этот день"
+                               Style="{StaticResource LabelCaption}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
                 </CollectionView.EmptyView>
             </CollectionView>
         </Grid>
