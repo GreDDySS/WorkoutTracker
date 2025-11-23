@@ -4,8 +4,8 @@
              xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
              x:Class="WorkoutTracker.Views.MainPageView"
              x:DataType="vm:MainViewModel"
-             Title="Tracker">
-
+             Title="Tracker"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
     <Grid RowDefinitions="Auto, *, Auto" Padding="20,10">
 
         <Label Grid.Row="0" 
@@ -31,7 +31,7 @@
                 </Border>
 
                 <Border Style="{StaticResource CardStyle}">
-                    <Grid RowDefinitions="*, 1, *">
+                    <Grid RowDefinitions="*, Auto, *" ColumnDefinitions="*">
 
                         <VerticalStackLayout Grid.Row="0" Spacing="10" Margin="0,10">
                             <Label Text="РАБОТА" TextColor="{StaticResource AccentWork}" FontAttributes="Bold" HorizontalOptions="Center"/>
@@ -44,7 +44,7 @@
                             </Border>
                         </VerticalStackLayout>
 
-                        <BoxView Grid.Row="1" WidthRequest="1" Color="{StaticResource BackgroundInput}" Margin="10"/>
+                        <BoxView Grid.Row="1" HeightRequest="1" Color="{StaticResource BackgroundInput}" Margin="10" HorizontalOptions="Fill"/>
 
                         <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,10">
                             <Label Text="ОТДЫХ" TextColor="{StaticResource AccentRest}" FontAttributes="Bold" HorizontalOptions="Center"/>
@@ -66,6 +66,6 @@
                 Text="НАЧАТЬ" 
                 Style="{StaticResource ButtonPrimary}"
                 Command="{Binding StartWorkoutCommand}"
-                Margin="0,0,0,20"/>
+                Margin="0,20,0,20"/>
     </Grid>
 </ContentPage>

@@ -4,113 +4,56 @@
              xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
              x:Class="WorkoutTracker.Views.AddExercisePageView"
              x:DataType="vm:AddExerciseViewModel"
-             Title="Добавить упражнение">
+             Title="Добавить упражнение"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
 
     <Grid RowDefinitions="Auto, *, Auto" RowSpacing="0">
-        
-        <Grid Grid.Row="0" 
-              ColumnDefinitions="Auto, *, Auto" 
-              Padding="15,10,15,10" 
-              BackgroundColor="{StaticResource BackgroundCard}">
-            
-            <Button Grid.Column="0"
-                    Command="{Binding CloseCommand}"
-                    Style="{StaticResource ButtonClose}"/>
 
-            <VerticalStackLayout Grid.Column="1"
-                                 HorizontalOptions="Center"
-                                 Spacing="{StaticResource SpacingXSmall}">
-                
-                <Label Text="{Binding Title}"
-                       Style="{StaticResource LabelBody}"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center"/>
-            </VerticalStackLayout>
-
-            <BoxView Grid.Column="2"
-                     WidthRequest="40"
-                     HeightRequest="40"
-                     HorizontalOptions="Center"
-                     Color="{StaticResource TransparentColor}"/>
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, 40" Padding="20,15">
+            <Button Grid.Column="0" Command="{Binding CloseCommand}" Style="{StaticResource ButtonClose}"/>
+            <Label Grid.Column="1" Text="{Binding Title}" Style="{StaticResource LabelTitle}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
 
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="{StaticResource SpacingLarge}"
-                                 Spacing="{StaticResource SpacingLarge}"
-                                 VerticalOptions="Start">
+            <VerticalStackLayout Padding="24" Spacing="24">
 
-                <Frame Style="{StaticResource FrameCard}">
-                    <VerticalStackLayout Spacing="{StaticResource SpacingXSmall}">
-                        <Label Text="Название упражнения"
-                               Style="{StaticResource LabelCaption}"
-                               HorizontalOptions="Center"
-                               FontAttributes="Bold"/>
-                        <Entry Text="{Binding ExerciseName}"
-                               Placeholder="Введите название"
-                               Style="{StaticResource EntryDefault}"/>
-                    </VerticalStackLayout>
-                </Frame>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="НАЗВАНИЕ" Style="{StaticResource LabelCaption}"/>
+                    <Border Stroke="{StaticResource BackgroundInput}" StrokeThickness="1" StrokeShape="RoundRectangle 16" BackgroundColor="{StaticResource BackgroundSecondary}" Padding="15,5">
+                        <Entry Text="{Binding ExerciseName}" Placeholder="Например: Жим лежа" Style="{StaticResource EntryDefault}"/>
+                    </Border>
+                </VerticalStackLayout>
 
-                <Frame Style="{StaticResource FrameCard}">
+                <Border Style="{StaticResource CardStyle}">
                     <VerticalStackLayout>
-                        <VerticalStackLayout Margin="30,0">
-                            <Label Text="РАБОТА" 
-                                   TextColor="{StaticResource AccentWork}" 
-                                   FontSize="{StaticResource FontSizeSmall}"
-                                   HorizontalOptions="Center" />
+                        <VerticalStackLayout Spacing="15" Margin="0,0,0,15">
+                            <Label Text="РАБОТА (сек)" TextColor="{StaticResource AccentWork}" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                             <Grid ColumnDefinitions="Auto, *, Auto">
-                                <Button Grid.Column="0" 
-                                        Text="—" 
-                                        Style="{StaticResource ButtonCounter}"
-                                        Command="{Binding ChangeWorkTimeCommand}" 
-                                        CommandParameter="-"/>
-                                <Label Grid.Column="1" 
-                                       Text="{Binding WorkTimeDisplay}" 
-                                       TextColor="{StaticResource AccentWork}" 
-                                       Style="{StaticResource LabelTitle}"/>
-                                <Button Grid.Column="2" 
-                                        Text="+" 
-                                        Style="{StaticResource ButtonCounter}"
-                                        Command="{Binding ChangeWorkTimeCommand}" 
-                                        CommandParameter="+"/>
+                                <Button Grid.Column="0" Text="—" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="-"/>
+                                <Label Grid.Column="1" Text="{Binding WorkTimeDisplay}" TextColor="{StaticResource AccentWork}" Style="{StaticResource LabelTitle}" FontSize="32" HorizontalOptions="Center"/>
+                                <Button Grid.Column="2" Text="+" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="+"/>
                             </Grid>
                         </VerticalStackLayout>
 
-                        <BoxView Style="{StaticResource DividerHorizontal}" Margin="-10, 10" />
+                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundInput}" Margin="20,10"/>
 
-                        <VerticalStackLayout Margin="30,0">
-                            <Label Text="ОТДЫХ" 
-                                   TextColor="{StaticResource AccentRest}" 
-                                   FontSize="{StaticResource FontSizeSmall}"
-                                   HorizontalOptions="Center" />
+                        <VerticalStackLayout Spacing="15" Margin="0,15,0,0">
+                            <Label Text="ОТДЫХ (сек)" TextColor="{StaticResource AccentRest}" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                             <Grid ColumnDefinitions="Auto, *, Auto">
-                                <Button Grid.Column="0" 
-                                        Text="—" 
-                                        Style="{StaticResource ButtonCounter}"
-                                        Command="{Binding ChangeRestTimeCommand}" 
-                                        CommandParameter="-"/>
-                                <Label Grid.Column="1" 
-                                       Text="{Binding RestTimeDisplay}" 
-                                       TextColor="{StaticResource AccentRest}" 
-                                       Style="{StaticResource LabelTitle}"/>
-                                <Button Grid.Column="2" 
-                                        Text="+" 
-                                        Style="{StaticResource ButtonCounter}"
-                                        Command="{Binding ChangeRestTimeCommand}" 
-                                        CommandParameter="+"/>
+                                <Button Grid.Column="0" Text="—" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="-"/>
+                                <Label Grid.Column="1" Text="{Binding RestTimeDisplay}" TextColor="{StaticResource AccentRest}" Style="{StaticResource LabelTitle}" FontSize="32" HorizontalOptions="Center"/>
+                                <Button Grid.Column="2" Text="+" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="+"/>
                             </Grid>
                         </VerticalStackLayout>
 
                     </VerticalStackLayout>
-                </Frame>
-
+                </Border>
             </VerticalStackLayout>
         </ScrollView>
 
-        <Grid Grid.Row="2"
-              Padding="15, 20,15,30">
+        <Grid Grid.Row="2" Padding="24,20,24,30">
             <Button Command="{Binding SaveCommand}"
-                    Text="Сохранить"
+                    Text="СОХРАНИТЬ"
                     Style="{StaticResource ButtonPrimary}"/>
         </Grid>
     </Grid>

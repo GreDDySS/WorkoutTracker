@@ -4,50 +4,51 @@
              xmlns:vm="clr-namespace:WorkoutTracker.ViewModels"
              x:Class="WorkoutTracker.Views.SettingsPageView"
              x:DataType="vm:SettingsViewModel"
-             Title="Настройки">
+             Title="Настройки"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="25">
+        <VerticalStackLayout Padding="24" Spacing="30">
 
-            <Label Text="Настройки" Style="{StaticResource LabelHero}" FontSize="40" Margin="0,10,0,10"/>
+            <Label Text="Настройки" Style="{StaticResource LabelHero}" FontSize="36" Margin="0,10"/>
 
-            <VerticalStackLayout Spacing="10">
-                <Label Text="ПО УМОЛЧАНИЮ" Style="{StaticResource LabelCaption}" FontAttributes="Bold"/>
+            <VerticalStackLayout Spacing="12">
+                <Label Text="ПО УМОЛЧАНИЮ" Style="{StaticResource LabelCaption}"/>
 
                 <Border Style="{StaticResource CardStyle}">
                     <VerticalStackLayout Spacing="20">
                         <Grid ColumnDefinitions="*, Auto">
                             <Label Text="Подходы" VerticalOptions="Center" Style="{StaticResource LabelBody}"/>
-                            <Border Grid.Column="1" Style="{StaticResource CounterContainer}" WidthRequest="140">
+                            <Border Grid.Column="1" Style="{StaticResource CounterContainer}" WidthRequest="130">
                                 <Grid ColumnDefinitions="40, *, 40">
                                     <Button Grid.Column="0" Text="-" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeApproachesCommand}" CommandParameter="-"/>
-                                    <Label Grid.Column="1" Text="{Binding DefaultApproaches}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding DefaultApproaches}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     <Button Grid.Column="2" Text="+" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeApproachesCommand}" CommandParameter="+"/>
                                 </Grid>
                             </Border>
                         </Grid>
 
-                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundInput}"/>
+                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundSecondary}"/>
 
                         <Grid ColumnDefinitions="*, Auto">
                             <Label Text="Время работы" VerticalOptions="Center" Style="{StaticResource LabelBody}"/>
-                            <Border Grid.Column="1" Style="{StaticResource CounterContainer}" WidthRequest="140">
+                            <Border Grid.Column="1" Style="{StaticResource CounterContainer}" WidthRequest="130">
                                 <Grid ColumnDefinitions="40, *, 40">
                                     <Button Grid.Column="0" Text="-" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="-"/>
-                                    <Label Grid.Column="1" Text="{Binding WorkTimeDisplay}" TextColor="{StaticResource AccentWork}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding WorkTimeDisplay}" TextColor="{StaticResource AccentWork}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     <Button Grid.Column="2" Text="+" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeWorkTimeCommand}" CommandParameter="+"/>
                                 </Grid>
                             </Border>
                         </Grid>
 
-                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundInput}"/>
+                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundSecondary}"/>
 
                         <Grid ColumnDefinitions="*, Auto">
                             <Label Text="Время отдыха" VerticalOptions="Center" Style="{StaticResource LabelBody}"/>
-                            <Border Grid.Column="1" Style="{StaticResource CounterContainer}" WidthRequest="140">
+                            <Border Grid.Column="1" Style="{StaticResource CounterContainer}" WidthRequest="130">
                                 <Grid ColumnDefinitions="40, *, 40">
                                     <Button Grid.Column="0" Text="-" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="-"/>
-                                    <Label Grid.Column="1" Text="{Binding RestTimeDisplay}" TextColor="{StaticResource AccentRest}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding RestTimeDisplay}" TextColor="{StaticResource AccentRest}" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
                                     <Button Grid.Column="2" Text="+" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeRestTimeCommand}" CommandParameter="+"/>
                                 </Grid>
                             </Border>
@@ -56,22 +57,22 @@
                 </Border>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="10">
-                <Label Text="ТАЙМЕР" Style="{StaticResource LabelCaption}" FontAttributes="Bold"/>
+            <VerticalStackLayout Spacing="12">
+                <Label Text="ТАЙМЕР" Style="{StaticResource LabelCaption}"/>
 
                 <Border Style="{StaticResource CardStyle}">
                     <VerticalStackLayout Spacing="20">
                         <Grid ColumnDefinitions="*, Auto">
                             <VerticalStackLayout Spacing="2">
                                 <Label Text="Автопереход" Style="{StaticResource LabelBody}"/>
-                                <Label Text="Начинать следующее сразу" Style="{StaticResource LabelCaption}"/>
+                                <Label Text="Начинать следующее сразу" Style="{StaticResource LabelCaption}" TextColor="{StaticResource TextTertiary}"/>
                             </VerticalStackLayout>
-                            <Switch Grid.Column="1" IsToggled="{Binding AutoStartNextExercise}" OnColor="{StaticResource AccentMain}"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding AutoStartNextExercise}" OnColor="{StaticResource AccentMain}" ThumbColor="White"/>
                         </Grid>
 
-                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundInput}"/>
+                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundSecondary}"/>
 
-                        <VerticalStackLayout Spacing="10">
+                        <VerticalStackLayout Spacing="15">
                             <Grid ColumnDefinitions="*, Auto">
                                 <Label Text="Предупреждение (сек)" Style="{StaticResource LabelBody}" VerticalOptions="Center"/>
                                 <Label Grid.Column="1" Text="{Binding CountdownWarningSeconds}" FontAttributes="Bold" TextColor="{StaticResource AccentMain}" FontSize="18"/>
@@ -79,7 +80,7 @@
                             <Grid ColumnDefinitions="40, *, 40">
                                 <Button Grid.Column="0" Text="-" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeWarningCommand}" CommandParameter="-"/>
                                 <Slider Grid.Column="1" Minimum="0" Maximum="10" Value="{Binding CountdownWarningSeconds}" 
-                                        MinimumTrackColor="{StaticResource AccentMain}" MaximumTrackColor="{StaticResource BackgroundInput}" ThumbColor="White"/>
+                                        MinimumTrackColor="{StaticResource AccentMain}" MaximumTrackColor="{StaticResource BackgroundInput}" ThumbColor="White" Margin="10,0"/>
                                 <Button Grid.Column="2" Text="+" Style="{StaticResource ButtonCounter}" Command="{Binding ChangeWarningCommand}" CommandParameter="+"/>
                             </Grid>
                         </VerticalStackLayout>
@@ -87,33 +88,33 @@
                 </Border>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Spacing="10">
-                <Label Text="УВЕДОМЛЕНИЯ" Style="{StaticResource LabelCaption}" FontAttributes="Bold"/>
+            <VerticalStackLayout Spacing="12">
+                <Label Text="УВЕДОМЛЕНИЯ" Style="{StaticResource LabelCaption}"/>
 
                 <Border Style="{StaticResource CardStyle}">
                     <VerticalStackLayout Spacing="20">
                         <Grid ColumnDefinitions="*, Auto">
                             <VerticalStackLayout Spacing="2">
                                 <Label Text="Звук" Style="{StaticResource LabelBody}"/>
-                                <Label Text="Сигнал при смене фаз" Style="{StaticResource LabelCaption}"/>
+                                <Label Text="Сигнал при смене фаз" Style="{StaticResource LabelCaption}" TextColor="{StaticResource TextTertiary}"/>
                             </VerticalStackLayout>
-                            <Switch Grid.Column="1" IsToggled="{Binding SoundEnabled}" OnColor="{StaticResource AccentMain}"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding SoundEnabled}" OnColor="{StaticResource AccentMain}" ThumbColor="White"/>
                         </Grid>
 
-                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundInput}"/>
+                        <BoxView HeightRequest="1" Color="{StaticResource BackgroundSecondary}"/>
 
                         <Grid ColumnDefinitions="*, Auto">
                             <VerticalStackLayout Spacing="2">
                                 <Label Text="Вибрация" Style="{StaticResource LabelBody}"/>
-                                <Label Text="Тактильный отклик" Style="{StaticResource LabelCaption}"/>
+                                <Label Text="Тактильный отклик" Style="{StaticResource LabelCaption}" TextColor="{StaticResource TextTertiary}"/>
                             </VerticalStackLayout>
-                            <Switch Grid.Column="1" IsToggled="{Binding VibrationEnabled}" OnColor="{StaticResource AccentMain}"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding VibrationEnabled}" OnColor="{StaticResource AccentMain}" ThumbColor="White"/>
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
 
-            <BoxView HeightRequest="50" Color="Transparent"/>
+            <BoxView HeightRequest="80" Color="Transparent"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

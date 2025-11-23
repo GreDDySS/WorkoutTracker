@@ -6,15 +6,16 @@
              x:Class="WorkoutTracker.Views.SelectExercisesPageView"
              x:DataType="vm:SelectExercisesViewModel"
              Title="Выбрать упражнения"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
 
     <ContentPage.Resources>
         <DataTemplate x:Key="ExerciseSelectTemplate" x:DataType="models:SelectableExercise">
-            <Border Style="{StaticResource CardStyle}" Padding="15">
+            <Border Style="{StaticResource CardStyle}" Padding="15" Margin="0,0,0,10">
                 <Grid ColumnDefinitions="Auto, *">
                     <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" Color="{StaticResource AccentMain}" VerticalOptions="Center" Margin="0,0,15,0"/>
 
-                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                    <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
                         <Label Text="{Binding Name}" Style="{StaticResource LabelBody}" FontAttributes="Bold"/>
                         <Label Text="{Binding Details}" Style="{StaticResource LabelCaption}"/>
                     </VerticalStackLayout>
@@ -24,32 +25,29 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, *, Auto" Padding="20,10">
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, 40" HeightRequest="60" Margin="0,0,0,10">
-            <Button Grid.Column="0" Command="{Binding CloseCommand}" Text="✕"
-                    BackgroundColor="{StaticResource BackgroundInput}" TextColor="{StaticResource TextSecondary}"
-                    CornerRadius="20" WidthRequest="40" HeightRequest="40" Padding="0"/>
 
-            <Label Grid.Column="1" Text="Добавить упражнения" Style="{StaticResource LabelTitle}" 
-                   FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, 40" HeightRequest="60" Margin="0,0,0,10">
+            <Button Grid.Column="0" Command="{Binding CloseCommand}" Style="{StaticResource ButtonClose}"/>
+            <Label Grid.Column="1" Text="Добавить упражнения" Style="{StaticResource LabelTitle}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
 
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Spacing="20" Padding="0,0,0,20">
+            <VerticalStackLayout Spacing="25" Padding="0,0,0,20">
 
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="МОИ УПРАЖНЕНИЯ" Style="{StaticResource LabelCaption}" FontAttributes="Bold" Margin="5,0"/>
+                    <Label Text="МОИ УПРАЖНЕНИЯ" Style="{StaticResource LabelCaption}" Margin="5,0"/>
 
                     <CollectionView ItemsSource="{Binding CustomExercises}"
                                     ItemTemplate="{StaticResource ExerciseSelectTemplate}"
                                     SelectionMode="None"/>
 
                     <Label IsVisible="{Binding HasNoCustomExercises}" 
-                           Text="Нет своих упражнений" 
-                           Style="{StaticResource LabelCaption}" HorizontalOptions="Center" Opacity="0.5"/>
+                           Text="Пока ничего нет" 
+                           Style="{StaticResource LabelCaption}" HorizontalOptions="Center" Opacity="0.5" Padding="20"/>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="БАЗА УПРАЖНЕНИЙ" Style="{StaticResource LabelCaption}" FontAttributes="Bold" Margin="5,0"/>
+                    <Label Text="БАЗА УПРАЖНЕНИЙ" Style="{StaticResource LabelCaption}" Margin="5,0"/>
 
                     <CollectionView ItemsSource="{Binding SystemExercises}"
                                     ItemTemplate="{StaticResource ExerciseSelectTemplate}"
@@ -57,7 +55,7 @@
 
                     <Label IsVisible="{Binding HasNoSystemExercises}" 
                            Text="База пуста" 
-                           Style="{StaticResource LabelCaption}" HorizontalOptions="Center" Opacity="0.5"/>
+                           Style="{StaticResource LabelCaption}" HorizontalOptions="Center" Opacity="0.5" Padding="20"/>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>

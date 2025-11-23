@@ -47,12 +47,6 @@
         <Setter Property="VerticalOptions" Value="Center"/>
     </Style>
 
-    <Style x:Key="LabelHeading" TargetType="Label">
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
-        <Setter Property="FontAttributes" Value="Bold"/>
-        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-    </Style>
-
     <Style TargetType="Label" x:Key="LabelBody">
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
@@ -66,13 +60,6 @@
     <Style x:Key="LabelSubtle" TargetType="Label">
         <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
         <Setter Property="TextColor" Value="{StaticResource TextTertiary}"/>
-    </Style>
-
-    <Style x:Key="LabelSectionHeader" TargetType="Label">
-        <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
-        <Setter Property="FontAttributes" Value="Bold"/>
-        <Setter Property="TextColor" Value="{StaticResource TextTertiary}"/>
-        <Setter Property="Margin" Value="0,20,0,5"/>
     </Style>
 
     <!-- ==================== BUTTON STYLES ==================== -->
@@ -89,16 +76,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="ButtonSecondary" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource ButtonSecondary}"/>
-        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
-        <Setter Property="FontAttributes" Value="Bold"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusMedium}"/>
-        <Setter Property="HeightRequest" Value="50"/>
-        <Setter Property="BorderWidth" Value="0"/>
-    </Style>
-
     <Style x:Key="ButtonIcon" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource ButtonSecondary}"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
@@ -109,33 +86,10 @@
         <Setter Property="BorderWidth" Value="0"/>
     </Style>
 
-    <Style x:Key="ButtonIconLarge" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource ButtonSecondary}"/>
-        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusSmall}"/>
-        <Setter Property="WidthRequest" Value="50"/>
-        <Setter Property="HeightRequest" Value="50"/>
-        <Setter Property="Padding" Value="0"/>
-        <Setter Property="BorderWidth" Value="0"/>
-        <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
-        <Setter Property="FontAttributes" Value="Bold"/>
-    </Style>
-
     <Style x:Key="ButtonClose" TargetType="Button" BasedOn="{StaticResource ButtonIcon}">
         <Setter Property="Text" Value="×"/>
         <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
         <Setter Property="FontAttributes" Value="Bold"/>
-    </Style>
-
-    <Style x:Key="ButtonFab" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{StaticResource ButtonSecondary}"/>
-        <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-        <Setter Property="FontSize" Value="30"/>
-        <Setter Property="WidthRequest" Value="56"/>
-        <Setter Property="HeightRequest" Value="56"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusRound}"/>
-        <Setter Property="Padding" Value="0"/>
-        <Setter Property="BorderWidth" Value="0"/>
     </Style>
 
     <Style TargetType="Button" x:Key="ButtonCounter">
@@ -168,33 +122,6 @@
         <Setter Property="Padding" Value="4"/>
     </Style>
 
-    <!-- ==================== FRAME STYLES ==================== -->
-
-    <Style x:Key="FrameCard" TargetType="Frame">
-        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundCard}"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusMedium}"/>
-        <Setter Property="Padding" Value="{StaticResource SpacingMedium}"/>
-        <Setter Property="HasShadow" Value="False"/>
-        <Setter Property="BorderColor" Value="{StaticResource TransparentColor}"/>
-    </Style>
-
-    <Style x:Key="FrameListItem" TargetType="Frame">
-        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundTertiary}"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusLarge}"/>
-        <Setter Property="Padding" Value="{StaticResource SpacingMedium}"/>
-        <Setter Property="Margin" Value="0,5,0,5"/>
-        <Setter Property="HasShadow" Value="False"/>
-        <Setter Property="BorderColor" Value="{StaticResource TransparentColor}"/>
-    </Style>
-
-    <Style x:Key="FrameHeader" TargetType="Frame">
-        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundCard}"/>
-        <Setter Property="CornerRadius" Value="{StaticResource RadiusMedium}"/>
-        <Setter Property="Padding" Value="12"/>
-        <Setter Property="HasShadow" Value="False"/>
-        <Setter Property="BorderColor" Value="{StaticResource TransparentColor}"/>
-    </Style>
-
     <!-- ==================== ENTRY STYLES ==================== -->
 
     <Style x:Key="EntryDefault" TargetType="Entry">
@@ -207,16 +134,16 @@
     <!-- ==================== SWITCH STYLES ==================== -->
 
     <Style TargetType="Switch">
-        <Setter Property="OnColor" Value="{StaticResource AccentSuccess}"/>
+        <Setter Property="OnColor" Value="AliceBlue"/>
         <Setter Property="ThumbColor" Value="{StaticResource TextPrimary}"/>
     </Style>
 
     <!-- ==================== SLIDER STYLES ==================== -->
 
     <Style TargetType="Slider">
-        <Setter Property="MinimumTrackColor" Value="{StaticResource AccentSuccess}"/>
+        <Setter Property="MinimumTrackColor" Value="AliceBlue"/>
         <Setter Property="MaximumTrackColor" Value="{StaticResource BackgroundElevated}"/>
-        <Setter Property="ThumbColor" Value="{StaticResource AccentSuccess}"/>
+        <Setter Property="ThumbColor" Value="AliceBlue"/>
     </Style>
 
     <!-- ==================== CHECKBOX STYLES ==================== -->
@@ -228,7 +155,7 @@
     <!-- ==================== BOX VIEW STYLES ==================== -->
 
     <Style x:Key="DividerHorizontal" TargetType="BoxView">
-        <Setter Property="Color" Value="{StaticResource Divider}"/>
+        <Setter Property="Color" Value="#111111"/>
         <Setter Property="HeightRequest" Value="1"/>
         <Setter Property="Margin" Value="0,10"/>
     </Style>
@@ -236,7 +163,7 @@
     <!-- ==================== ACTIVITY INDICATOR ==================== -->
 
     <Style TargetType="ActivityIndicator">
-        <Setter Property="Color" Value="{StaticResource AccentPrimary}"/>
+        <Setter Property="Color" Value="Aqua"/>
     </Style>
 
 </ResourceDictionary>

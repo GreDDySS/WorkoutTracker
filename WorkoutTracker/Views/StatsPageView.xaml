@@ -6,71 +6,72 @@
              xmlns:converters="clr-namespace:WorkoutTracker.Converters"
              x:Class="WorkoutTracker.Views.StatsPageView"
              x:DataType="vm:StatsViewModel"
-             Title="Статистика">
+             Title="Статистика"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
 
     <ContentPage.Resources>
         <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
 
         <DataTemplate x:Key="WorkoutItemTemplate" x:DataType="models:WorkoutHistory">
-            <Border Style="{StaticResource CardStyle}" Padding="15">
+            <Border Style="{StaticResource CardStyle}" Padding="15" Margin="0,0,0,10">
                 <Grid ColumnDefinitions="*, Auto">
                     <VerticalStackLayout Spacing="4">
                         <Label Text="{Binding WorkoutName}" Style="{StaticResource LabelBody}" FontAttributes="Bold"/>
                         <Label Text="{Binding WorkoutDetails}" Style="{StaticResource LabelCaption}"/>
                     </VerticalStackLayout>
                     <Label Grid.Column="1" Text="{Binding WorkoutDate, StringFormat='{0:HH:mm}'}" 
-                           TextColor="{StaticResource AccentMain}" FontAttributes="Bold" VerticalOptions="Center"/>
+                           TextColor="{StaticResource AccentMain}" FontAttributes="Bold" VerticalOptions="Center" 
+                           BackgroundColor="{StaticResource BackgroundSecondary}" Padding="8,4"/>
                 </Grid>
             </Border>
         </DataTemplate>
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, Auto, *, Auto">
-        
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Padding="15" BackgroundColor="{StaticResource BackgroundCard}">
-            <Button Grid.Column="0" Text="◀" TextColor="{StaticResource TextPrimary}" BackgroundColor="Transparent" BorderColor="Transparent" Command="{Binding PreviousMonthCommand}"/>
-            <Label Grid.Column="1" Text="{Binding CurrentMonthName}" Style="{StaticResource LabelTitle}" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
-            <Button Grid.Column="2" Text="▶" TextColor="{StaticResource TextPrimary}" BackgroundColor="Transparent" BorderColor="Transparent" Command="{Binding NextMonthCommand}"/>
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Padding="20,15">
+            <Button Grid.Column="0" Text="❮" TextColor="{StaticResource TextPrimary}" BackgroundColor="{StaticResource BackgroundCard}" CornerRadius="12" WidthRequest="40" HeightRequest="40" Padding="0" Command="{Binding PreviousMonthCommand}"/>
+            <Label Grid.Column="1" Text="{Binding CurrentMonthName}" Style="{StaticResource LabelTitle}" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Button Grid.Column="2" Text="❯" TextColor="{StaticResource TextPrimary}" BackgroundColor="{StaticResource BackgroundCard}" CornerRadius="12" WidthRequest="40" HeightRequest="40" Padding="0" Command="{Binding NextMonthCommand}"/>
         </Grid>
 
-        <Border Grid.Row="1" Margin="20" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource BackgroundCard}" StrokeThickness="0" Padding="10">
+        <Border Grid.Row="1" Margin="20,10" StrokeShape="RoundRectangle 24" BackgroundColor="{StaticResource BackgroundCard}" StrokeThickness="0" Padding="15">
             <VerticalStackLayout>
-                <Grid ColumnDefinitions="*,*,*,*,*,*,*">
+                <Grid ColumnDefinitions="*,*,*,*,*,*,*" Margin="0,0,0,10">
                     <Label Text="ПН" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                     <Label Grid.Column="1" Text="ВТ" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                     <Label Grid.Column="2" Text="СР" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                     <Label Grid.Column="3" Text="ЧТ" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                     <Label Grid.Column="4" Text="ПТ" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                     <Label Grid.Column="5" Text="СБ" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
-                    <Label Grid.Column="6" Text="ВС" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
+                    <Label Grid.Column="6" Text="ВС" Style="{StaticResource LabelCaption}" HorizontalOptions="Center" TextColor="{StaticResource AccentWork}"/>
                 </Grid>
 
                 <Grid x:Name="CalendarGrid" 
                       ColumnDefinitions="*,*,*,*,*,*,*" 
-                      RowDefinitions="50,50,50,50,50,50"
-                      RowSpacing="5" ColumnSpacing="5" Margin="0,10,0,0">
+                      RowDefinitions="45,45,45,45,45,45"
+                      RowSpacing="5" ColumnSpacing="5">
                 </Grid>
             </VerticalStackLayout>
         </Border>
 
-        <Grid Grid.Row="2" RowDefinitions="Auto, *" IsVisible="{Binding SelectedDate, Converter={StaticResource IsNotNullConverter}}">
+        <Grid Grid.Row="2" RowDefinitions="Auto, *" IsVisible="{Binding SelectedDate, Converter={StaticResource IsNotNullConverter}}" Margin="0,10,0,0">
             <Label Grid.Row="0" 
                     Text="{Binding SelectedDate, StringFormat='{0:dd MMMM}'}" 
                     Style="{StaticResource LabelTitle}" 
-                    Margin="20,0,0,10"/>
+                    Margin="24,0,0,15"/>
 
             <CollectionView Grid.Row="1" 
                             ItemsSource="{Binding WorkoutsForSelectedDate}"
                             ItemTemplate="{StaticResource WorkoutItemTemplate}"
-                            Margin="20,0">
+                            Margin="24,0">
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10" Opacity="0.5">
                         <Label Text="📅" FontSize="40" HorizontalOptions="Center"/>
-                        <Label Text="Нет тренировок" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
+                        <Label Text="В этот день тренировок не было" Style="{StaticResource LabelCaption}" HorizontalOptions="Center"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
             </CollectionView>
         </Grid>
     </Grid>
 </ContentPage>
-
