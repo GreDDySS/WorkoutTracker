@@ -6,7 +6,6 @@
              x:DataType="vm:TimerViewModel"
              Shell.NavBarIsVisible="False"
              BackgroundColor="{StaticResource BackgroundPrimary}">
-
     <Grid RowDefinitions="Auto, *, Auto" Padding="24">
 
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto">
@@ -52,7 +51,7 @@
 
             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="5">
                 <Border Padding="12,6" BackgroundColor="{StaticResource BackgroundSecondary}" StrokeShape="RoundRectangle 12" HorizontalOptions="Center">
-                    <Label Text="{Binding IsWorkPhase, Converter={StaticResource BoolToTextConverter}}" 
+                    <Label Text="{Binding IsWorkPhase}" 
                            FontSize="12" FontAttributes="Bold" CharacterSpacing="2" TextTransform="Uppercase">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding IsWorkPhase}" Value="True">

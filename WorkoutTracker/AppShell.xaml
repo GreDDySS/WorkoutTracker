@@ -7,12 +7,12 @@
     xmlns:Views="clr-namespace:WorkoutTracker.Views"
     Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="False"
+    Shell.BackgroundColor="#0F1115"
     Title="WorkoutTracker">
-
 
     <TabBar>
         <ShellContent Title="Главная" Icon="main.png" ContentTemplate="{DataTemplate Views:MainPageView}"/>
-        <ShellContent Title="Тренировки" Icon="settings.png" ContentTemplate="{DataTemplate Views:WorkoutPageView}"/>
+        <ShellContent Title="Тренировки" Icon="dumbbell.png" ContentTemplate="{DataTemplate Views:WorkoutPageView}"/>
         <ShellContent Title="Статистика" Icon="stats.png" ContentTemplate="{DataTemplate Views:StatsPageView}"/>
         <ShellContent Title="Настройки" Icon="settings.png" ContentTemplate="{DataTemplate Views:SettingsPageView}"/>
     </TabBar>

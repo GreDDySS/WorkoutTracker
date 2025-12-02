@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using WorkoutTracker.Models;
 using WorkoutTracker.Services;
 using WorkoutTracker.ViewModels;
@@ -24,8 +25,10 @@ public partial class TimerPageView : ContentPage
         var stateService = Handler.MauiContext.Services.GetService<IWorkoutStateService>();
         var navigationService = Handler.MauiContext.Services.GetService<INavigationService>();
         var historyService = Handler.MauiContext.Services.GetService<IWorkoutHistoryService>();
+        var settingservice = Handler.MauiContext.Services.GetService<ISettingsService>();
+        var notificationService = Handler.MauiContext.Services.GetService<IWorkoutNotificationService>();
 
-        _viewModel = new TimerViewModel(timerService, stateService, navigationService, historyService, settings);
+        _viewModel = new TimerViewModel(timerService, stateService, navigationService, historyService, settingservice, notificationService, settings);
         BindingContext = _viewModel;
     }
 

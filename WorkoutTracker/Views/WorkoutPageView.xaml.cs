@@ -45,4 +45,20 @@ public partial class WorkoutPageView : ContentPage
             _viewModel?.StartProgramCommand?.Execute(programId);
         }
     }
+
+    private void OnDeleteExerciseClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is int exerciseId)
+        {
+            _viewModel?.DeleteExerciseCommand?.Execute(exerciseId);
+        }
+    }
+
+    private void OnDeleteProgramClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is int programId)
+        {
+            _viewModel?.DeleteProgramCommand?.Execute(programId);
+        }
+    }
 }
