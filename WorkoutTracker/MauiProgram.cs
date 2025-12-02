@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using WorkoutTracker.Data;
+﻿using WorkoutTracker.Data;
 using WorkoutTracker.Services;
 using WorkoutTracker.ViewModels;
 using WorkoutTracker.Views;
+using Plugin.Maui.Audio;
+using Microsoft.Extensions.Logging;
 
 namespace WorkoutTracker
 {
@@ -10,6 +11,8 @@ namespace WorkoutTracker
     {
         public static MauiApp CreateMauiApp()
         {
+            SQLitePCL.Batteries.Init();
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -18,22 +21,7 @@ namespace WorkoutTracker
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-
-            builder.Services.AddSingleton<WorkoutDbContext>(provider =>
-            {
-                var context = new WorkoutDbContext();
-                try
-                {
-                    context.InitializeDatabaseAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Ошибка инициализации БД: {ex.Message}");
-                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                }
-                return context;
-            });
-
+            builder.Services.AddDbContext<WorkoutDbContext>();
             builder.Services.AddSingleton<IWorkoutTimerService, WorkoutTimerService>();
             builder.Services.AddTransient<IWorkoutStateService, WorkoutStateService>();
             builder.Services.AddSingleton<INavigationService, NavigationService>();
@@ -43,11 +31,15 @@ namespace WorkoutTracker
             builder.Services.AddSingleton<ITimeAdjustmentService, TimeAdjustmentService>();
             builder.Services.AddSingleton<IWorkoutHistoryService, WorkoutHistoryService>();
             builder.Services.AddSingleton<ISettingsService, SettingsService>();
+            builder.Services.AddSingleton(AudioManager.Current);
+            builder.Services.AddSingleton<IWorkoutNotificationService, WorkoutNotificationService>();
 
-            builder.Services.AddTransient<TimerViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<MainViewModel>();
-            
+            builder.Services.AddTransient<StatsViewModel>();
+
+            builder.Services.AddTransient<TimerPageView>();
+            builder.Services.AddTransient<StatsPageView>();
             builder.Services.AddTransient<MainPageView>();
             builder.Services.AddTransient<SettingsPageView>();
 
@@ -55,7 +47,13 @@ namespace WorkoutTracker
             builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            var app = builder.Build();
+
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<WorkoutDbContext>();
+            db.InitializeDatabaseAsync().GetAwaiter().GetResult();
+
+            return app;
         }
     }
 }
