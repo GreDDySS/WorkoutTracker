@@ -8,72 +8,19 @@ namespace WorkoutTracker.Services
     {
         private readonly WorkoutDbContext _context;
 
-        public ExerciseService(WorkoutDbContext context)
-        {
-            _context = context;
-        }
+        public ExerciseService(WorkoutDbContext context) => _context = context;
 
         public async Task<List<Exercise>> GetAllExercisesAsync()
-        {
-            try
-            {
-                return await _context.Exercises
-                    .OrderBy(e => e.Name)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке упражнений: {ex.Message}");
-                return new List<Exercise>();
-            }
-        }
+            => await _context.Exercises.OrderBy(e => e.Name).ToListAsync();
 
         public async Task<List<Exercise>> GetCustomExercisesAsync()
-        {
-            try
-            {
-                return await _context.Exercises
-                    .Where(e => e.IsCustom)
-                    .OrderBy(e => e.Name)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке пользовательских упражнений: {ex.Message}");
-                return new List<Exercise>();
-            }
-        }
+            => await _context.Exercises.Where(e => e.IsCustom).OrderBy(e => e.Name).ToListAsync();
 
         public async Task<List<Exercise>> GetSystemExercisesAsync()
-        {
-            try
-            {
-                return await _context.Exercises
-                    .Where(e => !e.IsCustom)
-                    .OrderBy(e => e.Name)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке системных упражнений: {ex.Message}");
-                return new List<Exercise>();
-            }
-        }
+            => await _context.Exercises.Where(e => !e.IsCustom).OrderBy(e => e.Name).ToListAsync();
 
-        public async Task<Exercise> GetExerciseByIdAsync(int id)
-        {
-            try
-            {
-                return await _context.Exercises
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(e => e.Id == id);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке упражнения: {ex.Message}");
-                return null;
-            }
-        }
+        public async Task<Exercise?> GetExerciseByIdAsync(int id)
+            => await _context.Exercises.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 
         public async Task<int> SaveExerciseAsync(Exercise exercise)
         {
@@ -81,23 +28,17 @@ namespace WorkoutTracker.Services
             {
                 if (exercise.Id == 0)
                 {
+                    exercise.IsCustom = true;
                     _context.Exercises.Add(exercise);
                 }
                 else
                 {
-                    var existingExercise = await _context.Exercises.FindAsync(exercise.Id);
-                    if (existingExercise != null)
-                    {
-                        existingExercise.Name = exercise.Name;
-                        existingExercise.WorkTimeSeconds = exercise.WorkTimeSeconds;
-                        existingExercise.RestTimeSeconds = exercise.RestTimeSeconds;
-                        existingExercise.IsCustom = exercise.IsCustom;
-                        existingExercise.Approaches = exercise.Approaches;
-                    }
-                    else
-                    {
-                        _context.Exercises.Update(exercise);
-                    }
+                    var existing = await _context.Exercises.FindAsync(exercise.Id);
+                    if (existing == null)
+                        return 0;
+
+                    _context.Entry(existing).CurrentValues.SetValues(exercise);
+                    exercise.IsCustom = exercise.IsCustom;
                 }
 
                 await _context.SaveChangesAsync();
@@ -105,7 +46,7 @@ namespace WorkoutTracker.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при сохранении упражнения: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[ExerciseService] SaveExerciseAsync ошибка: {ex.Message}\n{ex.StackTrace}");
                 return 0;
             }
         }
@@ -118,12 +59,13 @@ namespace WorkoutTracker.Services
                 if (exercise == null)
                     return false;
 
-                var isUsed = await _context.ProgramExercises
-                    .AnyAsync(pe => pe.ExerciseId == id);
+                if (!exercise.IsCustom) return false;
+
+                var isUsed = await _context.ProgramExercises.AnyAsync(pe => pe.ExerciseId == id);
 
                 if (isUsed)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Невозможно удалить упражнение, так как оно используется в программах.");
+                    System.Diagnostics.Debug.WriteLine($"Упражнение Id={id} используется в программах — удаление запрещено");
                     return false;
                 }
 
@@ -133,7 +75,7 @@ namespace WorkoutTracker.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при удалении упражнения: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[ExerciseService] DeleteExerciseAsync ошибка: {ex.Message}");
                 return false;
             }
         }

@@ -8,85 +8,56 @@ namespace WorkoutTracker.Services
     {
         private readonly WorkoutDbContext _context;
 
-        public ProgramService(WorkoutDbContext context)
-        {
-            _context = context;
-        }
+        public ProgramService(WorkoutDbContext context) => _context = context;
 
-        public async Task<List<Models.Program>> GetAllProgramsAsync()
-        {
-            try
-            {
-                return await _context.Programs
-                    .Include(p => p.Exercises)
-                    .ThenInclude(pe => pe.Exercise)
-                    .OrderBy(p => p.Name)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке программ: {ex.Message}");
-                return new List<Program>();
-            }
-        }
+        public async Task<List<Program>> GetAllProgramsAsync() =>
+            await _context.Programs
+                .Include(p => p.Exercises)
+                .ThenInclude(pe => pe.Exercise)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
 
-        public async Task<Models.Program> GetProgramByIdAsync(int id)
-        {
-            try
-            {
-                return await _context.Programs
-                    .AsNoTracking()
-                    .Include(p => p.Exercises)
-                    .ThenInclude(pe => pe.Exercise)
-                    .FirstOrDefaultAsync(p => p.Id == id);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке программы: {ex.Message}");
-                return null;
-            }
-        }
+        public async Task<Models.Program?> GetProgramByIdAsync(int id) =>
+            await _context.Programs
+                .AsNoTracking()
+                .Include(p => p.Exercises)
+                .ThenInclude(pe => pe.Exercise)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task<int> SaveProgramAsync(Program program)
         {
+            if (string.IsNullOrWhiteSpace(program.Name))
+                return 0;
+
+            var exerciseIds = program.Exercises.Select(pe => pe.ExerciseId).Distinct().ToList();
+            if (exerciseIds.Any())
+            {
+                var existingCount = await _context.Exercises
+                    .CountAsync(e => exerciseIds.Contains(e.Id));
+
+                if (existingCount != exerciseIds.Count)
+                    return 0;
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                using var transaction = await _context.Database.BeginTransactionAsync();
-
                 if (program.Id == 0)
                 {
-                    
-                    var programExercises = new List<ProgramExercise>();
+                    var newProgram = new Program { Name = program.Name };
 
-                    foreach (var pe in program.Exercises)
+                    newProgram.Exercises.AddRange(program.Exercises.Select(pe => new ProgramExercise
                     {
-                        
-                        var exercise = await _context.Exercises.FindAsync(pe.ExerciseId);
-
-                        if (exercise == null)
-                        {
-                            throw new InvalidOperationException($"Упражнение с Id={pe.ExerciseId} не найдено в базе данных");
-                        }
-
-                        
-                        programExercises.Add(new ProgramExercise
-                        {
-                            ExerciseId = pe.ExerciseId,
-                            Exercise = exercise, 
-                            Approaches = pe.Approaches
-                        });
-                    }
-
-                    var newProgram = new Program
-                    {
-                        Name = program.Name,
-                        Exercises = programExercises
-                    };
+                        ExerciseId = pe.ExerciseId,
+                        Approaches = pe.Approaches
+                    }));
 
                     _context.Programs.Add(newProgram);
                     await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
 
-                    program.Id = newProgram.Id;
+                    return newProgram.Id;
                 }
                 else
                 {
@@ -94,68 +65,41 @@ namespace WorkoutTracker.Services
                         .Include(p => p.Exercises)
                         .FirstOrDefaultAsync(p => p.Id == program.Id);
 
-                    if (existingProgram != null)
+                    if (existingProgram == null)
+                        return 0;
+
+                    existingProgram.Name = program.Name;
+                    existingProgram.Exercises.Clear();
+
+                    existingProgram.Exercises.AddRange(program.Exercises.Select(pe => new ProgramExercise
                     {
-                        existingProgram.Name = program.Name;
+                        ProgramId = existingProgram.Id,
+                        ExerciseId = pe.ExerciseId,
+                        Approaches = pe.Approaches
+                    }));
 
-                        _context.ProgramExercises.RemoveRange(existingProgram.Exercises);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
 
-                        foreach (var pe in program.Exercises)
-                        {
-                            var exercise = await _context.Exercises.FindAsync(pe.ExerciseId);
-
-                            if (exercise == null)
-                            {
-                                throw new InvalidOperationException($"Упражнение с Id={pe.ExerciseId} не найдено в базе данных");
-                            }
-
-                            existingProgram.Exercises.Add(new ProgramExercise
-                            {
-                                ExerciseId = pe.ExerciseId,
-                                Exercise = exercise,
-                                Approaches = pe.Approaches
-                            });
-                        }
-
-                        await _context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException($"Программа с Id={program.Id} не найдена");
-                    }
+                    return existingProgram.Id;
                 }
-
-                await transaction.CommitAsync();
-                return program.Id;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при сохранении программы: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                System.Diagnostics.Debug.WriteLine($"[ProgramService] SaveProgramAsync ФАТАЛЬНАЯ ОШИБКА: {ex.InnerException?.Message ?? ex.Message}\n{ex.StackTrace}");
+                await transaction.RollbackAsync();
                 return 0;
             }
         }
 
         public async Task<bool> DeleteProgramAsync(int id)
         {
-            try
-            {
-                var program = await _context.Programs
-                    .Include(p => p.Exercises)
-                    .FirstOrDefaultAsync(p => p.Id == id);
+            var program = await _context.Programs.FindAsync(id);
+            if (program == null) return false;
 
-                if (program == null)
-                    return false;
-
-                _context.Programs.Remove(program);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при удалении программы: {ex.Message}");
-                return false;
-            }
+            _context.Programs.Remove(program);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

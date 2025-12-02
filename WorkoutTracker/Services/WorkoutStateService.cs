@@ -159,7 +159,7 @@ namespace WorkoutTracker.Services
                 var currentExercise = GetCurrentExercise();
                 string exerciseName = currentExercise?.ExerciseName ?? "";
                 int approaches = currentExercise?.Approaches ?? Settings.Approaches;
-                return $"{exerciseName} - {phaseType} {CurrentState.CurrentApproach}/{approaches} ({CurrentState.CurrentExerciseIndex + 1}/{Settings.ProgramExercises.Count})";
+                return $"{exerciseName} {CurrentState.CurrentApproach}/{approaches} ({CurrentState.CurrentExerciseIndex + 1}/{Settings.ProgramExercises.Count})";
             }
             else
             {

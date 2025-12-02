@@ -17,6 +17,21 @@
             }
         }
 
+        public async Task NavigateTo(string page)
+        {
+            try
+            {
+                if (Shell.Current != null)
+                {
+                    await Shell.Current.GoToAsync(page);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка навигации: {ex.Message}");
+            }
+        }
+
         public async Task ShowWorkoutCompletedAlertAsync()
         {
             try
