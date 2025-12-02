@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using WorkoutTracker.Services;
+using WorkoutTracker.Models;
 
 namespace WorkoutTracker.ViewModels
 {
@@ -20,6 +21,8 @@ namespace WorkoutTracker.ViewModels
         public ICommand EditExerciseCommand { get; set; }
         public ICommand EditProgramCommand { get; set; }
         public ICommand StartProgramCommand { get; set; }
+        public ICommand DeleteExerciseCommand { get; set; }
+        public ICommand DeleteProgramCommand { get; set; }
 
         public ObservableCollection<object> Exercises { get; set; }
         public ObservableCollection<object> Programs { get; set; }
@@ -79,6 +82,8 @@ namespace WorkoutTracker.ViewModels
             EditExerciseCommand = new Command<int>(EditExercise);
             EditProgramCommand = new Command<int>(EditProgram);
             StartProgramCommand = new Command<int>(StartProgram);
+            DeleteExerciseCommand = new Command<int>(DeleteExercise);
+            DeleteProgramCommand = new Command<int>(DeleteProgram);
 
             LoadData();
         }
@@ -192,6 +197,64 @@ namespace WorkoutTracker.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"Ошибка при запуске программы: {ex.Message}");
             }
+        }
+
+        private async void DeleteExercise(int exerciseId)
+        {
+            if (exerciseId <= 0) return;
+
+            var exerciseName = Exercises.
+                OfType<Exercise>()
+                .FirstOrDefault(e => e.Id == exerciseId)?.Name ?? "упражнение";
+
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Удалить упражнения",
+                $"Удалить \"{exerciseName}\"?",
+                "Удалить",
+                "Отмена");
+
+            if (!confirm) return;
+
+            var success = await _exerciseService.DeleteExerciseAsync(exerciseId);
+            if (!success)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", "Не удалось удалить упражнение. Возможно, оно используется в программе.", "Ок");
+                return;
+            }
+
+            LoadData();
+        }
+
+        private async void DeleteProgram(int programId)
+        {
+            if (programId <= 0 || Shell.Current == null)
+            {
+                return;
+            }
+
+            var programName = Programs
+                .OfType<Program>()
+                .FirstOrDefault(p => p.Id == programId)?.Name ?? "программу";
+
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Удаление программы",
+                $"Удалить \"{programName}\"?",
+                "Удалить",
+                "Отмена");
+
+            if (!confirm)
+            {
+                return;
+            }
+
+            var success = await _programService.DeleteProgramAsync(programId);
+            if (!success)
+            {
+                await Shell.Current.DisplayAlert("Ошибка", "Не удалось удалить программу.", "Ок");
+                return;
+            }
+
+            LoadData();
         }
 
     }

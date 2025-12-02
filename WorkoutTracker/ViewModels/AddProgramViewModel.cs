@@ -13,7 +13,7 @@ namespace WorkoutTracker.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
         private readonly IProgramService _programService;
-        private RelayCommand _saveCommand;
+        public RelayCommand _saveCommand;
 
         private string _programName = string.Empty;
         private int _programId = 0;

@@ -12,26 +12,36 @@ namespace WorkoutTracker.ViewModels
         private readonly IWorkoutStateService _stateService;
         private readonly INavigationService _navigationService;
         private readonly IWorkoutHistoryService _historyService;
+        private readonly ISettingsService _settingsService;
+        private readonly IWorkoutNotificationService _notificationService;
         private readonly WorkoutSettings _settings;
+
         private bool _isDisposed = false;
         private readonly int _initialTotalTime;
+        private readonly int _countdownWarningSeconds;
 
         private string _remainingTime = "00:00";
         private string _currentTime = "00:00";
         private string _workoutProgress = "";
+        private int? _lastCountdownAlertSecond = null;
 
         public TimerViewModel(
-            IWorkoutTimerService timerService,
-            IWorkoutStateService stateService,
-            INavigationService navigationService,
-            IWorkoutHistoryService historyService,
+            IWorkoutTimerService timerService, 
+            IWorkoutStateService stateService, 
+            INavigationService navigationService, 
+            IWorkoutHistoryService historyService, 
+            ISettingsService settingsService, 
+            IWorkoutNotificationService notificationService, 
             WorkoutSettings settings)
         {
             _timerService = timerService;
             _stateService = stateService;
             _navigationService = navigationService;
             _historyService = historyService;
+            _settingsService = settingsService;
+            _notificationService = notificationService;
             _settings = settings;
+            _countdownWarningSeconds = _settingsService?.CountdownWarningSeconds ?? 0;
 
             _stateService.Initialize(settings);
             _initialTotalTime = _stateService.CalculateRemainingTime();
@@ -42,20 +52,21 @@ namespace WorkoutTracker.ViewModels
             UpdateDisplay();
             _timerService.Start();
 
-            CloseCommand = new RelayCommand(OnClose);
-            PreviousCommand = new RelayCommand(OnPrevious);
-            PauseCommand = new RelayCommand(OnPause);
-            NextCommand = new RelayCommand(OnNext);
+            CloseCommand = new RelayCommand(_ => OnClose());
+            PauseCommand = new RelayCommand(_ => IsPaused = !IsPaused);
+            NextCommand = new RelayCommand(_ => OnNext());
+            PreviousCommand = new RelayCommand(_ => OnPrevious());
         }
 
 
-        private void OnTimeElapsed(object sender, int seconds)
+        private void OnTimeElapsed(object? sender, int seconds)
         {
             if (_isDisposed) return;
 
             if (!_stateService.CurrentState.IsPaused && !_stateService.IsWorkoutCompleted())
             {
                 _stateService.DecrementTime();
+                HandleCountdownWarning();
 
                 if (_stateService.CurrentState.CurrentTimeSeconds == 0)
                 {
@@ -71,6 +82,8 @@ namespace WorkoutTracker.ViewModels
                         });
                         return;
                     }
+                    ResetCountdownTracking();
+                    TriggerPhaseChangeNotification();
                 }
 
                 MainThread.BeginInvokeOnMainThread(() =>
@@ -83,7 +96,7 @@ namespace WorkoutTracker.ViewModels
             }
         }
 
-        private void OnPhaseCompleted(object sender, EventArgs e)
+        private void OnPhaseCompleted(object? sender, EventArgs e)
         {
             if (_isDisposed) return;
             MainThread.BeginInvokeOnMainThread(() =>
@@ -99,6 +112,7 @@ namespace WorkoutTracker.ViewModels
         private void UpdateDisplay()
         {
             if (_isDisposed) return;
+
             CurrentTime = TimeFormatter.FormatTime(_stateService.CurrentState.CurrentTimeSeconds);
             RemainingTime = TimeFormatter.FormatTime(_stateService.CalculateRemainingTime());
             WorkoutProgress = _stateService.GetProgressText();
@@ -111,11 +125,11 @@ namespace WorkoutTracker.ViewModels
             set
             {
                 if (_isDisposed) return;
+
                 _stateService.CurrentState.IsPaused = value;
-                if (value)
-                    _timerService.Pause();
-                else
-                    _timerService.Resume();
+                if (value) _timerService.Pause();
+                else _timerService.Resume();
+
                 OnPropertyChanged(nameof(IsPaused));
                 OnPropertyChanged(nameof(PauseButtonFullText));
             }
@@ -143,10 +157,7 @@ namespace WorkoutTracker.ViewModels
             set => SetProperty(ref _workoutProgress, value);
         }
 
-        public bool IsWorkPhase
-        {
-            get => _stateService.CurrentState.IsWorkPhase;
-        }
+        public bool IsWorkPhase => _stateService.CurrentState.IsWorkPhase;
 
 
 
@@ -156,20 +167,20 @@ namespace WorkoutTracker.ViewModels
         public ICommand NextCommand { get; }
 
 
-        private async void OnClose(object parameter)
+        private void OnClose()
         {
             if (_isDisposed) return;
             _timerService.Stop();
-            await _navigationService.NavigateBackAsync();
+            _ = _navigationService.NavigateBackAsync();
         }
 
-        private void OnPause(object parameter)
+        private void OnPause()
         {
             if (_isDisposed) return;
             IsPaused = !IsPaused;
         }
 
-        private void OnNext(object parameter)
+        private void OnNext()
         {
             if (_isDisposed) return;
             _stateService.MoveToNextPhase();
@@ -177,23 +188,24 @@ namespace WorkoutTracker.ViewModels
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    if (!_isDisposed)
-                    {
-                        await OnWorkoutCompleted();
-                    }
+                    await OnWorkoutCompleted();
                 });
             }
             else
             {
+                ResetCountdownTracking();
+                TriggerPhaseChangeNotification();
                 UpdateDisplay();
                 OnPhaseChanged();
             }
         }
 
-        private void OnPrevious(object parameter)
+        private void OnPrevious()
         {
             if (_isDisposed) return;
             _stateService.MoveToPreviousPhase();
+            ResetCountdownTracking();
+            TriggerPhaseChangeNotification();
             UpdateDisplay();
             OnPhaseChanged();
         }
@@ -210,65 +222,86 @@ namespace WorkoutTracker.ViewModels
             });
         }
 
+        private void HandleCountdownWarning()
+        {
+            if (_notificationService == null || _countdownWarningSeconds <= 0) return;
+
+            int secondsLeft = _stateService.CurrentState.CurrentTimeSeconds;
+
+            if (secondsLeft > 0 && secondsLeft <= _countdownWarningSeconds)
+            {
+                if (_lastCountdownAlertSecond <= secondsLeft)
+                {
+                    _lastCountdownAlertSecond = secondsLeft;
+                    TriggerCountdownNotification();
+                }
+            }
+            else if (secondsLeft > _countdownWarningSeconds)
+            {
+                _lastCountdownAlertSecond = null;
+            }
+        }
+
+        private void TriggerCountdownNotification()
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (!_isDisposed)
+                {
+                    await _notificationService.PlayCountdownTickAsync();
+                }
+            });
+        }
+
+        private void TriggerPhaseChangeNotification()
+        {
+            if (_notificationService == null) return;
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (!_isDisposed)
+                {
+                    await _notificationService.PlayPhaseChangeAsync(_stateService.CurrentState.IsWorkPhase);
+                }
+            });
+        }
+
+        private void ResetCountdownTracking()
+        {
+            _lastCountdownAlertSecond = null;
+        }
+
         private async Task OnWorkoutCompleted()
         {
             if (_isDisposed) return;
+
             _timerService.Stop();
 
-            // Сохраняем тренировку в историю
-            try
-            {
-                var remainingTime = _stateService.CalculateRemainingTime();
-                var totalDuration = _initialTotalTime - remainingTime;
-                var workoutName = _settings.IsProgram && _settings.ProgramExercises != null && _settings.ProgramExercises.Count > 0
-                    ? _settings.ProgramExercises[0].ExerciseName + " и др."
-                    : "Свободная тренировка";
+            var totalDuration = _initialTotalTime - _stateService.CalculateRemainingTime();
 
-                var workoutDetails = "";
-                if (_settings.IsProgram && _settings.ProgramExercises != null)
-                {
-                    workoutDetails = string.Join(", ", _settings.ProgramExercises.Select(pe => $"{pe.ExerciseName} ({pe.Approaches} подходов)"));
-                }
-                else
-                {
-                    workoutDetails = $"{_settings.Approaches} подходов, работа {_settings.WorkTimeDisplay}, отдых {_settings.RestTimeDisplay}";
-                }
+            var workoutName = _settings.IsProgram && _settings.ProgramExercises != null && _settings.ProgramExercises.Count > 0
+                            ? _settings.ProgramExercises[0].ExerciseName + " и др."
+                            : "Свободная тренировка";
 
-                var workoutHistory = new WorkoutHistory
-                {
-                    WorkoutDate = DateTime.Now,
-                    WorkoutName = workoutName,
-                    TotalDurationSeconds = totalDuration,
-                    IsProgram = _settings.IsProgram,
-                    ProgramId = null, // Можно добавить позже, если нужно
-                    ProgramName = _settings.IsProgram ? workoutName : null,
-                    WorkoutDetails = workoutDetails
-                };
+            var details = _settings.IsProgram && _settings.ProgramExercises?.Any() == true
+                ? string.Join(", ", _settings.ProgramExercises.Select(pe => $"{pe.ExerciseName} ({pe.Approaches})"))
+                : $"{_settings.Approaches} подходов × {_settings.WorkTimeDisplay}/{_settings.RestTimeDisplay}";
 
-                await _historyService.SaveWorkoutAsync(workoutHistory);
-            }
-            catch (Exception ex)
+            var history = new WorkoutHistory
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при сохранении тренировки: {ex.Message}");
-            }
+                WorkoutDate = DateTime.Now,
+                WorkoutName = workoutName,
+                TotalDurationSeconds = totalDuration,
+                IsProgram = _settings.IsProgram,
+                ProgramId = null,
+                ProgramName = workoutName,
+                WorkoutDetails = details
+            };
 
-            try
-            {
-                await _navigationService.ShowWorkoutCompletedAlertAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при показе алерта: {ex.Message}");
-            }
+            await _historyService.SaveWorkoutAsync(history);
 
-            try
-            {
-                await _navigationService.NavigateBackAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при навигации: {ex.Message}");
-            }
+            await _navigationService.ShowWorkoutCompletedAlertAsync();
+            await _navigationService.NavigateBackAsync();
         }
 
         public void Dispose()

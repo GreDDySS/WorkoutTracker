@@ -11,7 +11,7 @@ namespace WorkoutTracker.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IExerciseService _exerciseService;
         private readonly ITimeAdjustmentService _timeAdjustmentService;
-        private RelayCommand _saveCommand;
+        public RelayCommand _saveCommand;
 
         private string _exerciseName = string.Empty;
         private int _workTimeSeconds = 20;

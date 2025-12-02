@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Input;
 using WorkoutTracker.Base;
 using WorkoutTracker.Models;
@@ -9,6 +10,7 @@ namespace WorkoutTracker.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private readonly ISettingsService _settingsService;
+        private readonly INavigationService _navigationService;
         private WorkoutSettings _settings;
 
         public WorkoutSettings Settings
@@ -41,13 +43,10 @@ namespace WorkoutTracker.ViewModels
         public MainViewModel(ISettingsService settingsService)
         {
             _settingsService = settingsService;
-            
-            _settings = new WorkoutSettings
-            {
-                Approaches = _settingsService.DefaultApproaches,
-                WorkTimeSeconds = _settingsService.DefaultWorkTimeSeconds,
-                RestTimeSeconds = _settingsService.DefaultRestTimeSeconds
-            };
+            _navigationService = GetService<INavigationService>() ?? throw new Exception("INavigationService не зарегистрирован");
+
+            _settings = new WorkoutSettings();
+            RelaodSettingsFromPreferences();
 
             StartWorkoutCommand = new RelayCommand(OnStartWorkout);
             ChangeApproachesCommand = new RelayCommand(OnChangeApproaches);
@@ -55,14 +54,27 @@ namespace WorkoutTracker.ViewModels
             ChangeRestTimeCommand = new RelayCommand(OnChangeRestTime);
         }
 
+        public void RelaodSettingsFromPreferences()
+        {
+            Approaches = _settingsService.DefaultApproaches;
+            _settings.WorkTimeSeconds = _settingsService.DefaultWorkTimeSeconds;
+            _settings.RestTimeSeconds = _settingsService.DefaultRestTimeSeconds;
+            OnPropertyChanged(nameof(WorkTimeDisplay));
+            OnPropertyChanged(nameof(RestTimeDisplay));
+        }
+
         private async void OnStartWorkout(object parameter)
         {
-            // Navigate to TimerPage with settings
-            if (Shell.Current != null)
+            try
             {
-                // Store settings in AppShell for navigation
-                AppShell.NavigationSettings = _settings;
-                await Shell.Current.GoToAsync("TimerPage");
+                if (Shell.Current != null)
+                {
+                    await Shell.Current.GoToAsync("TimerPage");
+                }
+            }
+            catch (Exception ex)
+            {
+                return;
             }
         }
 

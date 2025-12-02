@@ -10,27 +10,32 @@ namespace WorkoutTracker.ViewModels
     public class StatsViewModel : BaseViewModel
     {
         private readonly IWorkoutHistoryService _historyService;
+
         private DateTime _currentMonth;
         private DateTime? _selectedDate;
-        private ObservableCollection<WorkoutHistory> _workoutsForSelectedDate;
-        private Dictionary<DateTime, int> _workoutDays;
+        private ObservableCollection<WorkoutHistory> _workoutsForSelectedDate = new();
+        private Dictionary<DateTime, int> _workoutDays = new();
 
         public StatsViewModel(IWorkoutHistoryService historyService)
         {
             _historyService = historyService;
             _currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            _workoutsForSelectedDate = new ObservableCollection<WorkoutHistory>();
-            _workoutDays = new Dictionary<DateTime, int>();
 
-            PreviousMonthCommand = new RelayCommand(OnPreviousMonth);
-            NextMonthCommand = new RelayCommand(OnNextMonth);
-            DateSelectedCommand = new RelayCommand(OnDateSelectedCommand);
+            PreviousMonthCommand = new RelayCommand(_ => OnPreviousMonth());
+            NextMonthCommand = new RelayCommand(_ => OnNextMonth());
+            DateSelectedCommand = new RelayCommand(o => { if (o is DateTime d) SelectedDate = d; });
 
-            LoadMonthData();
+            _ = LoadMonthDataAsync();
         }
 
         public string CurrentMonthName => _currentMonth.ToString("MMMM yyyy", new CultureInfo("ru-RU"));
-        public DateTime CurrentMonth => _currentMonth;
+
+        public DateTime CurrentMonth
+        {
+            get => _currentMonth;
+            private set => SetProperty(ref _currentMonth, value);
+        }
+
         public DateTime? SelectedDate
         {
             get => _selectedDate;
@@ -39,13 +44,9 @@ namespace WorkoutTracker.ViewModels
                 if (SetProperty(ref _selectedDate, value))
                 {
                     if (value.HasValue)
-                    {
-                        LoadWorkoutsForDate(value.Value);
-                    }
+                       _ = LoadWorkoutsForDateAsync(value.Value);
                     else
-                    {
                         WorkoutsForSelectedDate.Clear();
-                    }
                 }
             }
         }
@@ -53,60 +54,46 @@ namespace WorkoutTracker.ViewModels
         public ObservableCollection<WorkoutHistory> WorkoutsForSelectedDate
         {
             get => _workoutsForSelectedDate;
-            set => SetProperty(ref _workoutsForSelectedDate, value);
+            private set => SetProperty(ref _workoutsForSelectedDate, value);
         }
+        
+        public Dictionary<DateTime, int> WorkoutDays => _workoutDays;
 
         public ICommand PreviousMonthCommand { get; }
         public ICommand NextMonthCommand { get; }
         public ICommand DateSelectedCommand { get; }
 
-        public bool HasWorkoutOnDate(DateTime date)
-        {
-            return _workoutDays.ContainsKey(date.Date);
-        }
+        public bool HasWorkoutOnDate(DateTime date) => _workoutDays.ContainsKey(date.Date);
 
-        public int GetWorkoutCountOnDate(DateTime date)
-        {
-            return _workoutDays.TryGetValue(date.Date, out var count) ? count : 0;
-        }
+        public int GetWorkoutCountOnDate(DateTime date) =>
+            _workoutDays.TryGetValue(date.Date, out var count) ? count : 0;
 
         public List<DateTime> GetCalendarDays()
         {
-            var days = new List<DateTime>();
-            var firstDayOfMonth = _currentMonth;
-            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            var days = new List<DateTime>(42);
 
-            var startDate = firstDayOfMonth;
-            var dayOfWeek = (int)startDate.DayOfWeek;
-            var adjustedDayOfWeek = dayOfWeek == 0 ? 6 : dayOfWeek - 1;
-            startDate = startDate.AddDays(-adjustedDayOfWeek);
+            var firstDay = new DateTime(_currentMonth.Year, _currentMonth.Month, 1);
+            var start = firstDay.AddDays(-(int)firstDay.DayOfWeek + 1);
 
             for (int i = 0; i < 42; i++)
             {
-                days.Add(startDate.AddDays(i));
+                days.Add(start.AddDays(i));
             }
 
             return days;
         }
 
-        private async void LoadMonthData()
+        private async Task LoadMonthDataAsync()
         {
-            try
-            {
-                _workoutDays = await _historyService.GetWorkoutDaysInMonthAsync(_currentMonth.Year, _currentMonth.Month);
-                OnPropertyChanged(nameof(CurrentMonthName));
-                OnPropertyChanged(nameof(CurrentMonth));
-                OnPropertyChanged(nameof(WorkoutDays));
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при загрузке данных месяца: {ex.Message}");
-            }
+            _workoutDays = await _historyService.GetWorkoutDaysInMonthAsync(_currentMonth.Year, _currentMonth.Month);
+            
+            OnPropertyChanged(nameof(CurrentMonthName));
+            OnPropertyChanged(nameof(CurrentMonth));
+            OnPropertyChanged(nameof(WorkoutDays));
+            OnPropertyChanged(string.Empty);
         }
 
-        public Dictionary<DateTime, int> WorkoutDays => _workoutDays;
-
-        private async void LoadWorkoutsForDate(DateTime date)
+        private async Task LoadWorkoutsForDateAsync(DateTime date)
         {
             try
             {
@@ -123,31 +110,23 @@ namespace WorkoutTracker.ViewModels
             }
         }
 
-        private void OnPreviousMonth(object parameter)
+        private async void OnPreviousMonth()
         {
             _currentMonth = _currentMonth.AddMonths(-1);
             SelectedDate = null;
-            LoadMonthData();
+            await LoadMonthDataAsync();
         }
 
-        private void OnNextMonth(object parameter)
+        private async void OnNextMonth()
         {
             _currentMonth = _currentMonth.AddMonths(1);
             SelectedDate = null;
-            LoadMonthData();
+            await LoadMonthDataAsync();
         }
 
         public void OnDateSelected(DateTime date)
         {
             SelectedDate = date;
-        }
-
-        private void OnDateSelectedCommand(object parameter)
-        {
-            if (parameter is DateTime date)
-            {
-                OnDateSelected(date);
-            }
         }
     }
 }
