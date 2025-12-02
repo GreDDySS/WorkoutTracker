@@ -96,7 +96,9 @@
         <Setter Property="BackgroundColor" Value="Transparent"/>
         <Setter Property="BorderColor" Value="Transparent"/>
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}"/>
-        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Margin" Value="10"/>
         <Setter Property="WidthRequest" Value="40"/>
         <Setter Property="HeightRequest" Value="40"/>
     </Style>
